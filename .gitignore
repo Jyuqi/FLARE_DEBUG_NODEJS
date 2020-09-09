@@ -1,0 +1,8 @@
+node_modules
+package-lock.json
+demos.txt
+functions/zip/function.zip
+# **/.vscode/
+payloads
+functions/docker/id_rsa
+logs
