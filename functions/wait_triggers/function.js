@@ -6,6 +6,26 @@ const path = require('path');
 const cp = require('child_process');
 const shell = require('shelljs');
 
+// function getDateString() {
+//     const date = new Date();
+//     const year = date.getFullYear();
+//     const month = `${date.getMonth() + 1}`.padStart(2, '0');
+//     const day =`${date.getDate()}`.padStart(2, '0');
+//     return `${year}${month}${day}`
+//   }
+  
+  function getFormattedTime() {
+    var today = new Date();
+    var y = today.getFullYear();
+    // JavaScript months are 0-based.
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    var h = today.getHours();
+    var mi = today.getMinutes();
+    var s = today.getSeconds();
+    return y + "-" + m + "-" + d + "-" + h + "-" + mi + "-" + s;
+}
+
 app.use(bodyParser.json());
 
 app.post('/init', function (req, res) {
@@ -50,11 +70,16 @@ app.post('/run', function (req, res) {
     if (state.alarm == "true"  && state.webhook == "true" && state.output != "") {
         console.log(Date());
         result = state.output;
+        fs.copyFile(fileName, `/root/${payload.lake_name}/state_${getFormattedTime()}.json`, (err) => {
+            if (err) throw err;
+            console.log('OK! Copy state.json');
+        });
         state.alarm = "false";
         state.webhook = "false";
         state.output = "";
         fs.writeFileSync(fileName, JSON.stringify(state));
         cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.gitlab_server}`, `${payload.gitlab_port}`, `${payload.lake_name}`, "triggers_state", `${payload.username}`], { stdio: 'inherit' });
+
         res.status(200).json(result);
     }
     else{

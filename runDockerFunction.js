@@ -1,6 +1,6 @@
 const request = require('request')
 
-const payloadFileName = './payloads/wt_payload.json'
+const payloadFileName = './payloads/payload.json'
 
 run = () => {
     let payload = {

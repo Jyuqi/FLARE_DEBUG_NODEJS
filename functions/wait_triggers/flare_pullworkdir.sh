@@ -19,4 +19,10 @@ chmod 400 ~/.ssh/id_rsa
 ssh-keyscan -p ${GITLAB_PORT} -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
 cd
 
-git clone -b ${CONTAINER} ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LAKE}.git || error_exit "$LINENO: An error has occurred in git clone."
+if [[ ! -e "/root/${LAKE}/" ]]; then
+	git clone -b ${CONTAINER} ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LAKE}.git || error_exit "$LINENO: An error has occurred in git clone."
+fi
+
+cd ${LAKE}/
+git checkout ${CONTAINER}
+git pull

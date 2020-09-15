@@ -19,6 +19,6 @@ TIMESTAMP=$(date +"%d_%m_%y")
 cd /root/${LAKE}/
 git config user.email "acis@ufl.edu"
 git config user.name ${USERNAME}
-git add state.json
+git add state*.json
 git commit -m "$(date +"%D %T") - Update trigger state"
 git push origin ${CONTAINER}
