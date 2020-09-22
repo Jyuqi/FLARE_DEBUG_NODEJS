@@ -27,7 +27,7 @@ app.post('/run', function (req, res) {
     // }  
     shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
 
-    shell.exec('wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/flare-download-noaa-dev/flare-install.sh | /bin/bash');
+    shell.exec('wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/flare-download-noaa/flare-install.sh | /bin/bash');
     const process1 = cp.spawnSync('/bin/bash', ['/code/flare_pullworkdir.sh', `${payload.gitlab_server}`, `${payload.gitlab_port}`, `${payload.lake_name}`, `${payload.container_name}`, `${payload.username}`], { stdio: 'inherit' });
     if(!process1.status){
         const process2 = cp.spawnSync('/bin/bash', [`/opt/flare/${payload.container_name}/flare-host.sh`, '-d', '--openwhisk'], { stdio: 'inherit' });
