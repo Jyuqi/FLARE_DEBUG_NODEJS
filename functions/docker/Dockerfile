@@ -1,4 +1,4 @@
-FROM flare-download-noaa AS FLARE-containers
+FROM flareforecast/flare-download-noaa-dev AS FLARE-containers
 
 FROM node:8-slim
 

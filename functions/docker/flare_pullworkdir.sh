@@ -17,7 +17,6 @@ USERNAME=$5         #fifth argument
 
 mkdir -p ~/.ssh/
 cp /code/id_rsa ~/.ssh/id_rsa
-cp /code/id_rsa ${DIRECTORY_HOST_SHARED}/${CONTAINER}/id_rsa
 chmod 400 ~/.ssh/id_rsa
 ssh-keyscan -p ${GITLAB_PORT} -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
 cd ${DIRECTORY_HOST}
