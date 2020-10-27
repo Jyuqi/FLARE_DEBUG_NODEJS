@@ -29,10 +29,10 @@ git remote add gitlab ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LA
 git fetch gitlab ${CONTAINER}
 git checkout ${CONTAINER}
 
-if [[ ! -e "${DIRECTORY_CONTAINER_SHARED}/test-data/${LAKE}" ]]; then
-     error_exit "$LINENO: No test-data directory."
+if [[ ! -e "${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}" ]]; then
+     error_exit "$LINENO: No ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE} directory."
 fi
-tar -czvf workdir_${TIMESTAMP}.tar.gz ${DIRECTORY_CONTAINER_SHARED}/test-data/${LAKE}
+tar -czvf workdir_${TIMESTAMP}.tar.gz ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}
 git add workdir_${TIMESTAMP}.tar.gz
 git clean -f
 git commit -m "$(date +"%D %T") - Add NOAA Forecast"
