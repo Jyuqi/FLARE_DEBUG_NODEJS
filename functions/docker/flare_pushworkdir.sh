@@ -25,6 +25,10 @@ if [[ ! -e "${DIRECTORY_HOST}/${LAKE}" ]]; then
      error_exit "$LINENO: No ${LAKE} gitlab directory."
 fi
 cd ${DIRECTORY_HOST}/${LAKE}/
+
+git config --global user.email `${USERNAME}@ufl.edu`
+git config --global user.name `${USERNAME}`
+
 git remote add gitlab ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LAKE}.git
 git fetch gitlab ${CONTAINER}
 git checkout ${CONTAINER}
