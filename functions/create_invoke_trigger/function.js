@@ -3,8 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
-var shell = require('shelljs');
-require('shelljs-plugin-sleep');
+const cp = require('child_process');
+
 
 app.use(bodyParser.json());
 
@@ -20,19 +20,17 @@ app.post('/init', function (req, res) {
 app.post('/run', function (req, res) {
     var payload = (req.body || {}).value;
 
-    // var result = {
-    //     "result": {
-    //         "echo": payload
-    //     }
-    // }  
     let contents;
+    let AUTH = 'd4558532-f53c-44cb-a4a0-3090cfd63880:fr7A1LGN1cA47u14Z37FVhIYLG7Z9pJLJwTM0Csn9bIL2DUvGFRF1NKpd9eXuqhQ';
+    let APIHOST = 'js-129-114-104-10.jetstream-cloud.org';
     console.log(`Start sleep ${payload.time} miliseconds`);
     console.log(Date());
-    // shell.sleep(`${payload.time}`);
     sleep(`${payload.time}`);
     console.log(Date());
 
-      
+    // fire an trigger at the end of an action
+    const process1 = cp.spawnSync('/bin/bash', ['/code/create_trigger.sh', `${AUTH}`, `${APIHOST}`], { stdio: 'inherit' });
+
     var result = { contents:contents };
     res.status(200).json(result);
 
