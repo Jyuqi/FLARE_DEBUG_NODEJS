@@ -4,7 +4,7 @@ WORKDIR /code
 
 COPY . /code
 
-Run apt-get update && apt-get install curl -y
+RUN apt-get update && apt-get install curl -y
 
 RUN npm install
 

@@ -9,6 +9,7 @@ error_exit()
 
 DIRECTORY_HOST="/opt/flare"
 DIRECTORY_HOST_SHARED="/opt/flare/shared"
+DIRECTORY_CONTAINER_SHARED="/root/flare/shared"
 GITLAB_SERVER=$1    #first argument
 GITLAB_PORT=$2      #second argument
 LAKE=$3             #third argument
@@ -28,10 +29,10 @@ cd ${LAKE}/
 git checkout ${CONTAINER}
 git pull
 
-if [ -f "config.tar.gz" ]; then
-    tar -xzvf config.tar.gz
+# if [ -f "config.tar.gz" ]; then
+#     tar -xzvf config.tar.gz
     # echo "{\"hello\":$(<flare-config.yml)}"
-    if [ -f "flare-config.yml" ]; then 
-        cp flare-config.yml ${DIRECTORY_HOST_SHARED}/${CONTAINER}/flare-config.yml || error_exit "$LINENO: An error has occurred in copy config file."
-    fi
+if [ -f "flare-config.yml" ]; then 
+    cp flare-config.yml ${DIRECTORY_HOST_SHARED}/${CONTAINER}/flare-config.yml || error_exit "$LINENO: An error has occurred in copy config file."
 fi
+# fi
