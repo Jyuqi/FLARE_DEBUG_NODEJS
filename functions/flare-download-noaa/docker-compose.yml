@@ -3,9 +3,9 @@ version: "2"
 services:
   web:
     build: .
-    command: npm run debug
+    command: npm run dev
     volumes:
-      - ./dist:/server/dist
+      - .:/code
     ports:
       - "8080:8080"
       - "5858:5858"
