@@ -1,4 +1,4 @@
-FROM flareforecast/flare-download-noaa-dev AS FLARE-containers
+FROM flareforecast/flare-download-noaa AS FLARE-containers
 
 FROM node:8-slim
 
@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install curl -y && \
     apt install rsync -y
 
 RUN npm install && \
-    npm install shelljs 
+    npm install shelljs && \
+    npm install js-yaml --save
 
 RUN mv /code/node_modules /node_modules
 
