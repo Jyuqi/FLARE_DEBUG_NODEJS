@@ -36,9 +36,9 @@ git checkout ${CONTAINER}
 if [[ ! -e "${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}" ]]; then
      error_exit "$LINENO: No ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE} directory."
 fi
-# tar -czvf workdir_${TIMESTAMP}.tar.gz ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}
-# git add workdir_${TIMESTAMP}.tar.gz
-rsync -a ./ ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}
+
+tar -czvf workdir_${TIMESTAMP}.tar.gz ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}
+git add workdir_${TIMESTAMP}.tar.gz
 git add .
 git clean -f
 git commit -m "$(date +"%D %T") - Add NOAA Forecast"

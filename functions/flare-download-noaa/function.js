@@ -22,21 +22,28 @@ app.post('/init', function (req, res) {
 app.post('/run', function (req, res) {
     var payload = (req.body || {}).value;
     let ret = "";
+    let prerunpull = false;
+    let postrunpush = false;
 
     shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
 
     shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name}`);
 
-    const data = fs.readFileSync(`/opt/flare/shared/${payload.container_name}/flare-config.yml`, 'utf8');
-    var file = yaml.load(data, 'utf8');
-    const indentedJson = JSON.parse(JSON.stringify(file, null, 4));
 
-    // var prerunpull = indentedJson["container"]["working-directory"]["pre-run-pull"];
-    var postrunpush = indentedJson["container"]["working-directory"]["post-run-push"];
-    // var gitlab_server = indentedJson["container"]["working-directory"]["git"]["remote"]["server"];
-    // var gitlab_port = indentedJson["container"]["working-directory"]["git"]["remote"]["port"];
-    // var lake = indentedJson["container"]["working-directory"]["git"]["remote"]["fcre"];
-    // var container_name = indentedJson["container"]["name"];
+    fs.readFile(`/opt/flare/shared/${payload.container_name}/flare-config.yml`, 'utf8', function (e, data) {
+        var file;
+        if (e) {
+            console.log('flare-config.yml not found.');
+        } else {
+            var file = yaml.load(data, 'utf8');
+            const indentedJson = JSON.parse(JSON.stringify(file, null, 4));
+            prerunpull = indentedJson["container"]["working-directory"]["pre-run-pull"];
+            // var gitlab_server = indentedJson["container"]["working-directory"]["git"]["remote"]["server"];
+            // var gitlab_port = indentedJson["container"]["working-directory"]["git"]["remote"]["port"];
+            // var lake = indentedJson["container"]["working-directory"]["git"]["remote"]["fcre"];
+            // var container_name = indentedJson["container"]["name"];
+        }
+    });
 
     const process1 = cp.spawnSync('/bin/bash', ['/code/flare_pullworkdir.sh', `${payload.gitlab_server}`, `${payload.gitlab_port}`, `${payload.lake}`, `${payload.container_name}`, `${payload.username}`], { stdio: 'inherit' });
     if(!process1.status){ 
@@ -46,6 +53,7 @@ app.post('/run', function (req, res) {
         const indentedJson = JSON.parse(JSON.stringify(file, null, 4));
         // var gitlab_port = indentedJson["container"]["working-directory"]["git"]["remote"]["port"];
         // console.log(gitlab_port);
+        postrunpush = indentedJson["container"]["working-directory"]["post-run-push"];
 
 
 

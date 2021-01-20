@@ -21,10 +21,6 @@ cp /code/id_rsa ~/.ssh/id_rsa
 chmod 400 ~/.ssh/id_rsa
 ssh-keyscan -p ${GITLAB_PORT} -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
 
-if [[ ! -e "${DIRECTORY_HOST}/${LAKE}" ]]; then
-     error_exit "$LINENO: No ${LAKE} gitlab directory."
-fi
-cd ${DIRECTORY_HOST}/${LAKE}/
 
 git config --global user.email "${USERNAME}@ufl.edu"
 git config --global user.name "${USERNAME}"
@@ -33,13 +29,18 @@ git remote add gitlab ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LA
 git fetch gitlab ${CONTAINER}
 git checkout ${CONTAINER}
 
+if [[ ! -e "${DIRECTORY_HOST}/${LAKE}" ]]; then
+     error_exit "$LINENO: No ${LAKE} gitlab directory."
+fi
+cd ${DIRECTORY_HOST}/${LAKE}/
+
 if [[ ! -e "${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}" ]]; then
      error_exit "$LINENO: No ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE} directory."
 fi
-# tar -czvf workdir_${TIMESTAMP}.tar.gz ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}
-# git add workdir_${TIMESTAMP}.tar.gz
-rsync -a ./ ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/${LAKE}
+
+tar -czvf flare_download_data_output.tar.gz ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}
+git add flare_download_data_output.tar.gz
 git add .
 git clean -f
-git commit -m "$(date +"%D %T") - Add NOAA Forecast"
+git commit -m "$(date +"%D %T") - update output"
 git push gitlab ${CONTAINER}
