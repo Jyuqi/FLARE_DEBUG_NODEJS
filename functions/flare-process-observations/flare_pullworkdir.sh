@@ -29,10 +29,14 @@ cd ${LAKE}/
 git checkout ${CONTAINER}
 git pull
 
-# if [ -f "config.tar.gz" ]; then
-#     tar -xzvf config.tar.gz
-    # echo "{\"hello\":$(<flare-config.yml)}"
+
 if [ -f "flare-config.yml" ]; then 
     cp flare-config.yml ${DIRECTORY_HOST_SHARED}/${CONTAINER}/flare-config.yml || error_exit "$LINENO: An error has occurred in copy config file."
 fi
-# fi
+
+export FLARE_CONTAINER_NAME=flare-download-data
+git checkout ${FLARE_CONTAINER_NAME}
+if [ -f "$FLARE_CONTAINER_NAME-output.tar.gz" ]; then 
+    mkdir -p ${DIRECTORY_HOST_SHARED}/${FLARE_CONTAINER_NAME}
+    tar xvzf ${FLARE_CONTAINER_NAME}-output.tar.gz -C ${DIRECTORY_HOST_SHARED} || error_exit "$LINENO: An error has occurred in tar ${FLARE_CONTAINER_NAME}-output.tar.gz."
+fi

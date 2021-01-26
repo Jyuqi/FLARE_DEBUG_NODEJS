@@ -5,8 +5,7 @@ FROM node:8-slim
 WORKDIR /code
 
 COPY . /code
-RUN apt-get update && apt-get install curl -y && \
-    apt install rsync -y
+RUN apt-get update && apt-get install curl -yaml
 
 RUN npm install && \
     npm install shelljs && \
