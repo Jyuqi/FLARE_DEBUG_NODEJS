@@ -23,11 +23,9 @@ ssh-keyscan -p ${GITLAB_PORT} -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
 cd ${DIRECTORY_HOST}
 
 if [[ ! -e "${DIRECTORY_HOST}/${LAKE}" ]]; then
-    git clone ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LAKE}.git || error_exit "$LINENO: An error has occurred in git clone."
+    git clone --depth 1 ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LAKE}.git -b ${CONTAINER}|| error_exit "$LINENO: An error has occurred in git clone."
 fi
 cd ${LAKE}/
-git checkout ${CONTAINER}
-git pull
 
 
 if [ -f "flare-config.yml" ]; then 

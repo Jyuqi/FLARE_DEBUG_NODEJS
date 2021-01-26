@@ -30,14 +30,14 @@ if [[ ! -e "${DIRECTORY_HOST}/${LAKE}" ]]; then
 fi
 cd ${DIRECTORY_HOST}/${LAKE}/
 
-git remote add gitlab ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LAKE}.git
-git fetch gitlab ${CONTAINER}
+git remote set-branches origin ${FLARE_CONTAINER_NAME}
+git fetch --depth 1 origin ${FLARE_CONTAINER_NAME}
 git checkout ${CONTAINER}
 
-cd
+
 tar -czvf ${DIRECTORY_HOST}/${LAKE}/${CONTAINER}-output.tar.gz -C ${DIRECTORY_CONTAINER_SHARED} ${CONTAINER}
 cd ${DIRECTORY_HOST}/${LAKE}/
 git add ${CONTAINER}-output.tar.gz
 git clean -f
 git commit -m "$(date +"%D %T") - update output"
-git push gitlab ${CONTAINER}
+git push origin ${CONTAINER}

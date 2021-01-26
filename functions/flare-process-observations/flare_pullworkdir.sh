@@ -26,8 +26,8 @@ if [[ ! -e "${DIRECTORY_HOST}/${LAKE}" ]]; then
     git clone --depth 1 ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LAKE}.git -b ${CONTAINER}|| error_exit "$LINENO: An error has occurred in git clone."
 fi
 cd ${LAKE}/
-git fetch --depth 1 origin ${CONTAINER}
-git checkout ${CONTAINER}
+# git fetch --depth 1 origin ${CONTAINER}
+# git checkout ${CONTAINER}
 
 if [ -f "flare-config.yml" ]; then 
     cp flare-config.yml ${DIRECTORY_HOST_SHARED}/${CONTAINER}/flare-config.yml || error_exit "$LINENO: An error has occurred in copy config file."
