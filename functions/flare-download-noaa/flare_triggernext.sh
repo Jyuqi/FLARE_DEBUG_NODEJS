@@ -1,7 +1,7 @@
 CONFIG_FILE="flare-config.yml"
 CONTAINER_NAME=$1
 LAKE=$2
-DIRECTORY="/opt/flare/$LAKE"
+DIRECTORY="/root/flare/shared/$CONTAINER_NAME"
 AUTH=$(yq r ${DIRECTORY}/${CONFIG_FILE} openwhisk.auth)
 APIHOST=$(yq r ${DIRECTORY}/${CONFIG_FILE} openwhisk.apihost)
 NEXR_TRIGGER=$(yq r ${DIRECTORY}/${CONFIG_FILE} openwhisk.next-trigger.name)

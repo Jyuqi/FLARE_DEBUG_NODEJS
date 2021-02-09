@@ -19,25 +19,8 @@ TIMESTAMP=$(date +"%d_%m_%y")
 mkdir ~/.ssh/
 cp /code/id_rsa ~/.ssh/id_rsa
 chmod 400 ~/.ssh/id_rsa
-ssh-keyscan -p ${GITLAB_PORT} -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
+ssh-keyscan -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
 
-git config --global user.email "${USERNAME}@ufl.edu"
-git config --global user.name "${USERNAME}"
-
-
-if [[ ! -e "${DIRECTORY_HOST}/${LAKE}" ]]; then
-     error_exit "$LINENO: No ${LAKE} gitlab directory."
-fi
-cd ${DIRECTORY_HOST}/${LAKE}/
-
-git remote set-branches origin ${FLARE_CONTAINER_NAME}
-git fetch --depth 1 origin ${FLARE_CONTAINER_NAME}
-git checkout ${CONTAINER}
-
-
-tar -czvf ${DIRECTORY_HOST}/${LAKE}/${CONTAINER}-output.tar.gz -C ${DIRECTORY_CONTAINER_SHARED} ${CONTAINER}
-cd ${DIRECTORY_HOST}/${LAKE}/
-git add ${CONTAINER}-output.tar.gz
-git clean -f
-git commit -m "$(date +"%D %T") - update output"
-git push origin ${CONTAINER}
+tar -czvf ${CONTAINER}-output.tar.gz -C ${DIRECTORY_CONTAINER_SHARED} ${CONTAINER}
+scp ${CONTAINER}-output.tar.gz ubuntu@${GITLAB_SERVER}:/home/ubuntu/fcre/${CONTAINER}/
+rm ${CONTAINER}-output.tar.gz
