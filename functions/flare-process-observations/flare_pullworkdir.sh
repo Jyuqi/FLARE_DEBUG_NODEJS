@@ -22,6 +22,8 @@ chmod 400 ~/.ssh/id_rsa
 ssh-keyscan -p ${GITLAB_PORT} -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
 cd ${DIRECTORY_HOST}
 
+git config --global ssh.postBuffer 524288000
+
 if [[ ! -e "${DIRECTORY_HOST}/${LAKE}" ]]; then
     git clone --depth 1 ssh://git@${GITLAB_SERVER}:${GITLAB_PORT}/${USERNAME}/${LAKE}.git -b ${CONTAINER}|| error_exit "$LINENO: An error has occurred in git clone."
 fi
