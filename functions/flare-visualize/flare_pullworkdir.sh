@@ -23,8 +23,31 @@ ssh-keyscan -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
 # copy config file
 scp ubuntu@${GITLAB_SERVER}:/home/ubuntu/fcre/${CONTAINER}/flare-config.yml ${DIRECTORY_HOST_SHARED}/${CONTAINER}/ || error_exit "$LINENO: An error has occurred in copy config file."
 
+# copy work dir
+Ndays_steps=0
+current_date=$(date +%Y%m%d)
+set_of_dependencies=("flare-generate-forecast")
 
-export FLARE_CONTAINER_NAME=flare-generate-forecast
-scp ubuntu@${GITLAB_SERVER}:/home/ubuntu/fcre/$FLARE_CONTAINER_NAME/$FLARE_CONTAINER_NAME-output.tar.gz ${DIRECTORY_HOST_SHARED}/
-cd ${DIRECTORY_HOST_SHARED}/
-tar -xvzf $FLARE_CONTAINER_NAME-output.tar.gz
+for FLARE_CONTAINER_NAME in ${set_of_dependencies[*]};
+do
+	downloaded=false
+	for daysback in `seq 0 $Ndays_steps`
+	do
+    	scandate=$(date -d "$current_date - $daysback days" +%Y%m%d)
+		if (downloaded==false) 
+		then
+			scp ubuntu@${GITLAB_SERVER}:/home/ubuntu/fcre/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/
+			if [ "$?" -eq "0" ]; # copy work dir success
+			then
+				echo "OK"
+				downloaded=true
+				cd ${DIRECTORY_HOST_SHARED}/
+				tar -xzf ${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz
+				break
+			else
+				echo "NotOK"
+			fi
+		fi
+    done
+	downloaded==true || error_exit "$LINENO: An error has occurred in copy $FLARE_CONTAINER_NAME working directory."
+done
