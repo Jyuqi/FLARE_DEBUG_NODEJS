@@ -114,3 +114,10 @@ To invoke the action, you can either invoke by passing a json file or passing al
 $ wsk -i action invoke $FLARE_CONTAINER_NAME -P payload.json
 ```
 
+## Developing Functions about Flare Containers in openwhisk
+
+* The function.js is the starting point for each container. 
+* When it finishes initialization, it will run flare_pullworkdir.sh that pulls flare-config.yml and all the dependencies from remote storage through scp commands. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
+* Then it runs FLARE-containers as described here: https://github.com/FLARE-forecast/FLAREv1/wiki/How-to-Run-FLARE-Containers
+* After finishes the job, the function run flare_pushworkdir.sh that pushes current working directory with time stamp to the remote storage. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
+* Finally it should use flare_triggernext.sh to trigger next action. The scheme is described here: https://docs.google.com/drawings/d/1vuVv8oTUOf1VD017zIsQ6Jdoys8al-Zy_55RJZvDK2Y/edit
