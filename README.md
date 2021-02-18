@@ -111,11 +111,3 @@ To invoke the action, you can either invoke by passing a json file or passing al
 $ wsk -i action invoke $FLARE_CONTAINER_NAME -P payload.json
 ```
 
-
-## Resources
-
-To find out more about how to develop OpenWhisk functions locally, check out the following resources:
-
-* [Advanced debugging of OpenWhisk actions](https://medium.com/openwhisk/advanced-debugging-of-openwhisk-actions-518414636932)
-* [wskdb: The OpenWhisk Debugger](https://github.com/apache/incubator-openwhisk-debugger)
-* [Testing node.js functions locally](https://github.com/apache/incubator-openwhisk-devtools/tree/master/node-local)
