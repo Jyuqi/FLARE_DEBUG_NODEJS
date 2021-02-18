@@ -121,3 +121,15 @@ $ wsk -i action invoke $FLARE_CONTAINER_NAME -P payload.json
 * Then it runs FLARE-containers as described here: https://github.com/FLARE-forecast/FLAREv1/wiki/How-to-Run-FLARE-Containers
 * After finishes the job, the function run flare_pushworkdir.sh that pushes current working directory with time stamp to the remote storage. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
 * Finally it should use flare_triggernext.sh to trigger next action. The scheme is described here: https://docs.google.com/drawings/d/1vuVv8oTUOf1VD017zIsQ6Jdoys8al-Zy_55RJZvDK2Y/edit
+
+The information about next trigger should be included at the end of flare-config.yml, which is stored at the remote storage 
+```yaml
+## Openwhisk Settings
+openwhisk:
+  apihost: 
+  auth: 
+  next-trigger:
+    name: flare-download-data-ready-fcre
+    payload: 
+```
+
