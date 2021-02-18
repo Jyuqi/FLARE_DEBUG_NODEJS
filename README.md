@@ -51,6 +51,7 @@ There is a sample function [function.js](https://github.com/nheidloff/openwhisk-
 
 The function can be changed in the IDE without having to restart the container after every change. Instead a mapped volume is used to share the files between the IDE and the container and [nodemon](https://github.com/remy/nodemon) restarts the Node application in the container automatically when files change.
 
+
 **Debugging**
 
 Run the following commands in a terminal to run the container - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-1.png):
@@ -79,6 +80,7 @@ $ docker-compose down
 ```
 
 **Deployment**
+
 Here is how to deploy the function locally.
 ```sh
 $ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
@@ -91,6 +93,7 @@ $ wsk -i action update $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk
 ```
 
 **Invocation and Payload**
+
 The payload.json should contain all the parameters we need to pass while invoking the action through the /run endpoint.
 * a lake name (a string, e.g. "fcre"), a container name (also a string, e.g. flare-download-noaa), a server IP and port,  and an SSH key. For example,
 
