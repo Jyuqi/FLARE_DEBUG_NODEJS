@@ -47,7 +47,7 @@ There are two ways to start the debugger in VS Code:
 
 ## Debugging Functions in Docker Containers
 
-There is a sample function [function.js](functions/docker/function.js) that shows how to write an OpenWhisk function running in a container by implementing the endpoints '/init' and '/run'.
+There is a sample function [function.js](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/functions/docker/function.js) that shows how to write an OpenWhisk function running in a container by implementing the endpoints '/init' and '/run'.
 
 The function can be changed in the IDE without having to restart the container after every change. Instead a mapped volume is used to share the files between the IDE and the container and [nodemon](https://github.com/remy/nodemon) restarts the Node application in the container automatically when files change.
 
