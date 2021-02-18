@@ -84,6 +84,9 @@ Here is how to deploy the function locally.
 $ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
 $ docker build -t <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME .
 $ docker push <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME
+### if the openwhisk action is not created before, '-t' is timeout flag
+$ wsk -i action create $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
+### if the openwhisk action is already existed
 $ wsk -i action update $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
 ```
 
@@ -102,6 +105,7 @@ The payload.json should contain all the parameters we need to pass while invokin
     "ssh_key": ["-----BEGIN RSA PRIVATE KEY-----", "...", "-----END RSA PRIVATE KEY-----"]
 }
 ```
+
 To invoke the action, you can either invoke by passing a json file or passing all parameters one by one.
 ```sh
 $ wsk -i action invoke $FLARE_CONTAINER_NAME -P payload.json
