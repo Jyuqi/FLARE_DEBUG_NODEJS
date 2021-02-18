@@ -7,8 +7,6 @@ Watch the [video](https://www.youtube.com/watch?v=P9hpcOqQ3hw) to see this in ac
 
 The following screenshot shows how functions that run in Docker can be debugged from Visual Studio Code. In order to do this, a volume is used to share the files between the IDE and the container and VS Code attaches a remote debugger to the Docker container. The functions can be changed in the IDE without having to restart the container. [nodemon](https://github.com/remy/nodemon) restarts the Node application in the container automatically when files change.
 
-![alt text](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/raw/master/images/debugging-docker-3.png "Debugging")
-
 
 ## Prerequisites and Setup
 
