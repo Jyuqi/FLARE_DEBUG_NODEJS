@@ -1,11 +1,14 @@
 # Developing and Debugging Node.js OpenWhisk Functions in VS Code
 
-I follow this [project](https://github.com/nheidloff/FLARE_DEBUG_NODEJS) which shows how [Apache OpenWhisk](http://openwhisk.org/) functions can be developed and debugged locally via [Visual Studio Code](https://code.visualstudio.com/).
+I follow this [project](https://github.com/nheidloff/openwhisk-debug-nodejs) which shows how [Apache OpenWhisk](http://openwhisk.org/) functions can be developed and debugged locally via [Visual Studio Code](https://code.visualstudio.com/).
 
 
 Watch the [video](https://www.youtube.com/watch?v=P9hpcOqQ3hw) to see this in action.
 
 The following screenshot shows how functions that run in Docker can be debugged from Visual Studio Code. In order to do this, a volume is used to share the files between the IDE and the container and VS Code attaches a remote debugger to the Docker container. The functions can be changed in the IDE without having to restart the container. [nodemon](https://github.com/remy/nodemon) restarts the Node application in the container automatically when files change.
+
+![alt text](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/raw/master/images/debugging-docker-3.png "Debugging")
+
 
 
 ## Prerequisites and Setup
@@ -37,8 +40,8 @@ $ code .
 
 There are two ways to start the debugger in VS Code:
 
-* From the [debug page](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-ui.png) choose the specific launch configuration
-* Open the [command palette](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-palette-1.png) (⇧⌘P) and search for 'Debug: Select and Start Debugging' or enter 'debug se'. After this select the specific [launch configuration](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-palette-2.png)
+* From the [debug page](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-ui.png) choose the specific launch configuration
+* Open the [command palette](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-palette-1.png) (⇧⌘P) and search for 'Debug: Select and Start Debugging' or enter 'debug se'. After this select the specific [launch configuration](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-palette-2.png)
 
 
 
@@ -50,25 +53,25 @@ The function can be changed in the IDE without having to restart the container a
 
 **Debugging**
 
-Run the following commands in a terminal to run the container - see [screenshot](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-1.png):
+Run the following commands in a terminal to run the container - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-1.png):
 
 ```sh
-$ cd FLARE_DEBUG_NODEJS/functions/$container_name
+$ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
 $ docker-compose up --build
 ```
 
-Run the launch configurations 'function in container' to attach the debugger - see [screenshot](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-2.png).
+Run the launch configurations 'function in container' to attach the debugger - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-2.png).
 
-You can define the input as JSON in [payload.json](payloads/payload.json). Set breakpoints in [function.js](functions/docker/function.js). After this invoke the endpoints in the container by running these commands from a second terminal - see [screenshot](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-3.png).
+You can define the input as JSON in [payload.json](payloads/payload.json). Set breakpoints in [function.js](functions/docker/function.js). After this invoke the endpoints in the container by running these commands from a second terminal - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-3.png).
 
 ```sh
 $ cd FLARE_DEBUG_NODEJS
 $ node runDockerFunction.js
 ```
 
-You'll see the output of the function in the terminal - see [screenshot](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-4.png).
+You'll see the output of the function in the terminal - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-4.png).
 
-After you're done stop the container via these commands in the first terminal - see [screenshot](https://github.com/nheidloff/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-5.png):
+After you're done stop the container via these commands in the first terminal - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-5.png):
 
 ```sh
 $ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
