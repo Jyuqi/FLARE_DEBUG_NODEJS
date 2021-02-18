@@ -1,6 +1,6 @@
 # Developing and Debugging Node.js OpenWhisk Functions in VS Code
 
-I follow this [project](https://github.com/nheidloff/openwhisk-debug-nodejs) which shows how [Apache OpenWhisk](http://openwhisk.org/) functions can be developed and debugged locally via [Visual Studio Code](https://code.visualstudio.com/).
+I follow this  project (https://github.com/nheidloff/openwhisk-debug-nodejs) which clearly shows how [Apache OpenWhisk](http://openwhisk.org/) functions can be developed and debugged locally via [Visual Studio Code](https://code.visualstudio.com/). 
 
 
 Watch the [video](https://www.youtube.com/watch?v=P9hpcOqQ3hw) to see this in action.
@@ -78,16 +78,34 @@ $ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
 $ docker-compose down
 ```
 
-**Deployment and Invocation**
-
+**Deployment**
+Here is how to deploy the function locally.
 ```sh
 $ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
 $ docker build -t <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME .
 $ docker push <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME
 $ wsk -i action update $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
-$ wsk -i action invoke $FLARE_CONTAINER_NAME -P payload.json
 ```
 
+**Invocation and Payload**
+The payload.json should contain all the parameters we need to pass while invoking the action through the /run endpoint.
+* a lake name (a string, e.g. "fcre"), a container name (also a string, e.g. flare-download-noaa), a server IP and port,  and an SSH key. For example,
+
+```json
+{
+    "type": "payload",
+    "lake": "fcre",
+    "gitlab_server": "XXX.XXX.XXX.XXX",
+    "gitlab_port": "2289",
+    "username": "acis",
+    "container_name": "flare-download-noaa",
+    "ssh_key": ["-----BEGIN RSA PRIVATE KEY-----", "...", "-----END RSA PRIVATE KEY-----"]
+}
+```
+To invoke the action, you can either invoke by passing a json file or passing all parameters one by one.
+```sh
+$ wsk -i action invoke $FLARE_CONTAINER_NAME -P payload.json
+```
 
 
 ## Resources
