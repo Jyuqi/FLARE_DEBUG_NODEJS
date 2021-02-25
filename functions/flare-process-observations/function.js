@@ -55,11 +55,8 @@ app.post('/run', function (req, res) {
         // console.log(gitlab_port);
         postrunpush = indentedJson["container"]["working-directory"]["post-run-push"];
 
-
-
         const process2 = cp.spawnSync('/bin/bash', [`/opt/flare/${payload.container_name}/flare-host.sh`, '-d', '--openwhisk'], { stdio: 'inherit' });
         if(!process2.status){
-            if (postrunpush) {
                 const process3 = cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.gitlab_server}`, `${payload.gitlab_port}`, `${payload.lake}`, `${payload.container_name}`, `${payload.username}`], { stdio: 'inherit' });
                 if(!process3.status){
                     const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
@@ -73,17 +70,6 @@ app.post('/run', function (req, res) {
                 else{
                     ret += "error in running flare_pushworkdir.sh; ";
                 }
-            }
-            else{
-                const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
-                if(!process4.status){
-                    ret += "success";
-                }
-                else{
-                    ret += "error in running flare_triggernext.sh; ";
-                }  
-            }
-
         }
         else{
             ret += "error in running flare-host.sh; ";
