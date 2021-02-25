@@ -1,24 +1,14 @@
-# Debugging Node.js OpenWhisk Functions in VS Code
+# Developing and Debugging Node.js OpenWhisk Functions in VS Code
 
-This [project](https://github.com/nheidloff/openwhisk-debug-nodejs) shows how [Apache OpenWhisk](http://openwhisk.org/) functions can be developed and debugged locally via [Visual Studio Code](https://code.visualstudio.com/).
+I follow this  project (https://github.com/nheidloff/openwhisk-debug-nodejs) which clearly shows how [Apache OpenWhisk](http://openwhisk.org/) functions can be developed and debugged locally via [Visual Studio Code](https://code.visualstudio.com/). 
 
-This project doesn't contain a new tool or OpenWhisk extension. Instead it contains sample functions and configurations of VS Code that explain how to debug your own OpenWhisk functions.
-
-You don't need to use Docker to debug functions unless you want to write your functions in Docker containers. In the simplest case clone the repo, overwrite the samples in functions/singleFile with your own code and run the debug configurations.
-
-Five different scenarios are supported:
-
-* Single file JavaScript functions (synch and asynch)
-* Zipped JavaScript functions with additional npm dependencies
-* JavaScript functions running in Docker containers
-* Dockerized JavaScript functions running in the local Node.js runtime
-* TypeScript functions running in Docker containers
 
 Watch the [video](https://www.youtube.com/watch?v=P9hpcOqQ3hw) to see this in action.
 
 The following screenshot shows how functions that run in Docker can be debugged from Visual Studio Code. In order to do this, a volume is used to share the files between the IDE and the container and VS Code attaches a remote debugger to the Docker container. The functions can be changed in the IDE without having to restart the container. [nodemon](https://github.com/remy/nodemon) restarts the Node application in the container automatically when files change.
 
-![alt text](https://github.com/nheidloff/openwhisk-debug-nodejs/raw/master/images/debugging-docker-3.png "Debugging")
+![alt text](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/raw/master/images/debugging-docker-3.png "Debugging")
+
 
 
 ## Prerequisites and Setup
@@ -33,7 +23,6 @@ Make sure you have the following tools installed:
 * [Node](https://nodejs.org/en/download/)
 * [Docker](https://docs.docker.com/engine/installation/)
 * [git](https://git-scm.com/downloads)
-* [IBM Cloud account](https://ibm.biz/nheidloff)
 
 
 **Setup**
@@ -41,8 +30,8 @@ Make sure you have the following tools installed:
 Run the following commands:
 
 ```sh
-$ git clone https://github.com/nheidloff/openwhisk-debug-nodejs.git
-$ cd openwhisk-debug-nodejs
+$ git clone https://github.com/nheidloff/FLARE_DEBUG_NODEJS.git
+$ cd FLARE_DEBUG_NODEJS
 $ npm install
 $ code .
 ```
@@ -51,199 +40,96 @@ $ code .
 
 There are two ways to start the debugger in VS Code:
 
-* From the [debug page](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/start-debugger-ui.png) choose the specific launch configuration
-* Open the [command palette](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/start-debugger-palette-1.png) (⇧⌘P) and search for 'Debug: Select and Start Debugging' or enter 'debug se'. After this select the specific [launch configuration](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/start-debugger-palette-2.png)
+* From the [debug page](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-ui.png) choose the specific launch configuration
+* Open the [command palette](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-palette-1.png) (⇧⌘P) and search for 'Debug: Select and Start Debugging' or enter 'debug se'. After this select the specific [launch configuration](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/start-debugger-palette-2.png)
 
-
-## Debugging Single File Functions
-
-There are three sample functions:
-
-* [function.js](functions/singleFile/function.js)
-* [functionAsynch.js](functions/singleFile/functionAsynch.js)
-* [functionAsychReject.js](functions/singleFile/functionAsychReject.js)
-
-**Debugging**
-
-To run and debug the functions, you can define the input as JSON in [payload.json](payloads/payload.json). In order to debug the functions, set breakpoints in the code.
-
-Run the launch configurations 'function.js', 'functionAsynch.js' and 'functionAsychReject.js' to run and debug the functions - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-single-file-1.png).
-
-**Deployment and Invocation**
-
-In order to deploy the functions to IBM Cloud Functions, replace 'your-ibm-cloud-organization' and 'your-ibm-cloud-space' and run the following commands:
-
-```sh
-$ bx login -a api.ng.bluemix.net
-$ bx target -o <your-ibm-cloud-organization> -s <your-ibm-cloud-space>
-$ bx plugin install Cloud-Functions -r Bluemix
-$ cd openwhisk-debug-nodejs/functions/singleFile
-$ bx wsk action create function function.js
-$ bx wsk action invoke --blocking function --param name Niklas
-$ bx wsk action create functionAsynch functionAsynch.js
-$ bx wsk action invoke --blocking functionAsynch --param name Niklas
-$ bx wsk action create functionAsynchReject functionAsynchReject.js
-$ bx wsk action invoke --blocking functionAsynchReject --param name Niklas
-```
-
-After you've changed the functions and created them on IBM Cloud Functions, use 'bx wsk action update' instead of 'bx wsk action create'.
-
-
-## Debugging Zipped Functions
-
-There is a sample function [functionAsynch.js](functions/zip/functionAsynch.js) that shows how to use a npm module which is not supported by the standard [OpenWhisk Node runtime](https://hub.docker.com/r/openwhisk/nodejs6action/~/dockerfile/).
-
-**Debugging**
-
-To run and debug the function, you can define the input as JSON in [payload.json](payloads/payload.json). In order to debug the function, set breakpoints in [functionAsynch.js](functions/zip/functionAsynch.js).
-
-Install the npm modules:
-
-```sh
-$ cd openwhisk-debug-nodejs/functions/zip
-$ npm install
-```
-
-Run the launch configurations 'zip' to run and debug the function - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-zip.png).
-
-**Deployment and Invocation**
-
-In order to deploy the functions to IBM Cloud Functions, replace 'your-ibm-cloud-organization' and 'your-ibm-cloud-space' and run the following commands:
-
-```sh
-$ bx login -a api.ng.bluemix.net
-$ bx target -o <your-ibm-cloud-organization> -s <your-ibm-cloud-space>
-$ bx plugin install Cloud-Functions -r Bluemix
-$ cd openwhisk-debug-nodejs/functions/zip
-$ sh deploy.sh
-$ bx wsk action invoke --blocking zippedFunctionAsynch --param name Niklas
-```
-
-After you've changed the function and created it on IBM Cloud Functions, use 'bx wsk action update' instead of 'bx wsk action create' in [deploy.sh](functions/zip/deploy.sh).
 
 
 ## Debugging Functions in Docker Containers
 
-There is a sample function [function.js](functions/docker/function.js) that shows how to write an OpenWhisk function running in a container by implementing the endpoints '/init' and '/run'.
+There is a sample function [function.js](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/functions/docker/function.js) that shows how to write an OpenWhisk function running in a container by implementing the endpoints '/init' and '/run'.
 
 The function can be changed in the IDE without having to restart the container after every change. Instead a mapped volume is used to share the files between the IDE and the container and [nodemon](https://github.com/remy/nodemon) restarts the Node application in the container automatically when files change.
 
+
 **Debugging**
 
-Run the following commands in a terminal to run the container - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-docker-1.png):
+Run the following commands in a terminal to run the container - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-1.png):
 
 ```sh
-$ cd openwhisk-debug-nodejs/functions/docker
+$ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
 $ docker-compose up --build
 ```
 
-Run the launch configurations 'function in container' to attach the debugger - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-docker-2.png).
+Run the launch configurations 'function in container' to attach the debugger - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-2.png).
 
-You can define the input as JSON in [payload.json](payloads/payload.json). Set breakpoints in [function.js](functions/docker/function.js). After this invoke the endpoints in the container by running these commands from a second terminal - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-docker-3.png).
+You can define the input as JSON in [payload.json](payloads/payload.json). Set breakpoints in [function.js](functions/docker/function.js). After this invoke the endpoints in the container by running these commands from a second terminal - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-3.png).
 
 ```sh
-$ cd openwhisk-debug-nodejs
+$ cd FLARE_DEBUG_NODEJS
 $ node runDockerFunction.js
 ```
 
-You'll see the output of the function in the terminal - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-docker-4.png).
+You'll see the output of the function in the terminal - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-4.png).
 
-After you're done stop the container via these commands in the first terminal - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-docker-5.png):
+After you're done stop the container via these commands in the first terminal - see [screenshot](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/blob/master/images/debugging-docker-5.png):
 
 ```sh
-$ cd openwhisk-debug-nodejs/functions/docker
+$ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
 $ docker-compose down
 ```
 
-**Deployment and Invocation**
+**Deployment**
 
-In order to deploy the functions to IBM Cloud Functions, replace 'your-ibm-cloud-organization', 'your-ibm-cloud-space' and 'dockerhub-name' and run the following commands:
-
+Here is how to deploy the function locally.
 ```sh
-$ bx login -a api.ng.bluemix.net
-$ bx target -o <your-ibm-cloud-organization> -s <your-ibm-cloud-space>
-$ bx plugin install Cloud-Functions -r Bluemix
-$ cd openwhisk-debug-nodejs/functions/docker
-$ docker build -t <dockerhub-name>/openwhisk-docker-nodejs-debug:latest .
-$ docker push <dockerhub-name>/openwhisk-docker-nodejs-debug
-$ bx wsk action create actionDocker --docker <dockerhub-name>/openwhisk-docker-nodejs-debug:latest
-$ bx wsk action invoke --blocking actionDocker --param name Niklas
+$ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
+$ docker build -t <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME .
+$ docker push <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME
+### if the openwhisk action is not created before, '-t' is timeout flag
+$ wsk -i action create $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
+### if the openwhisk action is already existed
+$ wsk -i action update $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
 ```
 
+**Invocation and Payload**
 
-## Debugging dockerized Functions
+The payload.json should contain all the parameters we need to pass while invoking the action through the /run endpoint.
+* a lake name (a string, e.g. "fcre"), a container name (also a string, e.g. flare-download-noaa), a server IP and port,  and an SSH key. For example,
 
-You can run and debug the same dockerized function [function.js](functions/docker/function.js) in your local Node.js runtime without Docker.
-
-**Debugging**
-
-Run these commands to install the dependencies:
-
-```sh
-$ cd openwhisk-debug-nodejs/functions/docker
-$ npm install
+```json
+{
+    "type": "payload",
+    "lake": "fcre",
+    "gitlab_server": "XXX.XXX.XXX.XXX",
+    "gitlab_port": "2289",
+    "username": "acis",
+    "container_name": "flare-download-noaa",
+    "ssh_key": ["-----BEGIN RSA PRIVATE KEY-----", "...", "-----END RSA PRIVATE KEY-----"]
+}
 ```
 
-Run the launch configurations 'dockerized function' to launch the debugger - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-dockerized-1.png).
-
-You can define the input as JSON in [payload.json](payloads/payload.json). Set breakpoints in [function.js](functions/docker/function.js). After this invoke the endpoints in the container by running these commands from a terminal - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-dockerized-3.png).
-
+To invoke the action, you can either invoke by passing a json file or passing all parameters one by one.
 ```sh
-$ cd openwhisk-debug-nodejs
-$ node runDockerFunction.js
+$ wsk -i action invoke $FLARE_CONTAINER_NAME -P payload.json
 ```
 
-**Deployment and Invocation**
+## Developing Functions about Flare Containers in openwhisk
 
-See above. This is identical to 'Debugging Functions in Docker Containers'.
+* The function.js is the starting point for each container. 
+* When it finishes initialization, it will run flare_pullworkdir.sh that pulls flare-config.yml and all the dependencies from remote storage through scp commands. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
+* Then it runs FLARE-containers as described here: https://github.com/FLARE-forecast/FLAREv1/wiki/How-to-Run-FLARE-Containers
+* After finishes the job, the function run flare_pushworkdir.sh that pushes current working directory with time stamp to the remote storage. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
+* Finally it should use flare_triggernext.sh to trigger next action. The scheme is described here: https://docs.google.com/drawings/d/1vuVv8oTUOf1VD017zIsQ6Jdoys8al-Zy_55RJZvDK2Y/edit
 
-
-## Debugging TypeScript Functions in Docker Containers
-
-There is a sample function [function.ts](functions/typescript/src/function.ts) that shows how to write an OpenWhisk function in TypeScript running in a container by implementing the endpoints '/init' and '/run'.
-
-The function can be changed in the IDE without having to restart the container after every change. Instead a mapped volume is used to share the files between the IDE and the container and [nodemon](https://github.com/remy/nodemon) restarts the Node application in the container automatically when files change.
-
-**Debugging**
-
-Run the launch configurations 'typescript function' to start the container and to attach the debugger - see [screenshot](https://github.com/nheidloff/openwhisk-debug-nodejs/blob/master/images/debugging-typescript.png).
-
-You can define the input as JSON in [payload.json](payloads/payload.json). Set breakpoints in [function.ts](functions/typescript/src/function.ts). After this invoke the endpoints in the container by running these commands from a second terminal.
-
-```sh
-$ cd openwhisk-debug-nodejs
-$ node runDockerFunction.js
+The information about next trigger should be included at the end of flare-config.yml, which is stored at the remote storage 
+```yaml
+## Openwhisk Settings
+openwhisk:
+  apihost: 
+  auth: 
+  next-trigger:
+    name: flare-download-data-ready-fcre
+    payload: 
 ```
 
-You'll see the output of the function in the terminal.
-
-After you're done stop the container via these commands in the first terminal.
-
-```sh
-$ cd openwhisk-debug-nodejs/functions/typescript
-$ docker-compose down
-```
-
-**Deployment and Invocation**
-
-In order to deploy the functions to IBM Cloud Functions, replace 'your-ibm-cloud-organization', 'your-ibm-cloud-space' and 'dockerhub-name' and run the following commands:
-
-```sh
-$ bx login -a api.ng.bluemix.net
-$ bx target -o <your-ibm-cloud-organization> -s <your-ibm-cloud-space>
-$ bx plugin install Cloud-Functions -r Bluemix
-$ cd openwhisk-debug-nodejs/functions/typescript
-$ docker build -t <dockerhub-name>/openwhisk-docker-typescript-debug:latest .
-$ docker push <dockerhub-name>/openwhisk-docker-typescript-debug
-$ bx wsk action create actionTypeScript --docker <dockerhub-name>/openwhisk-docker-typescript-debug:latest
-$ bx wsk action invoke --blocking actionTypeScript --param name Niklas
-```
-
-
-## Resources
-
-To find out more about how to develop OpenWhisk functions locally, check out the following resources:
-
-* [Advanced debugging of OpenWhisk actions](https://medium.com/openwhisk/advanced-debugging-of-openwhisk-actions-518414636932)
-* [wskdb: The OpenWhisk Debugger](https://github.com/apache/incubator-openwhisk-debugger)
-* [Testing node.js functions locally](https://github.com/apache/incubator-openwhisk-devtools/tree/master/node-local)
