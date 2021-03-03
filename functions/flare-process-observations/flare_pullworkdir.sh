@@ -27,8 +27,8 @@ ssh-keyscan -t rsa ${GITLAB_SERVER} >> ~/.ssh/known_hosts
 scp ubuntu@${GITLAB_SERVER}:/home/ubuntu/fcre/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/ || error_exit "$LINENO: An error has occurred in copy config file."
 
 # copy work dir
-Ndays_steps=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.Ndays_steps)
-set_of_dependencies=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.set_of_dependencies)
+days-look-back=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.days-look-back)
+set_of_dependencies=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.container-dependencies)
 current_date=$(date +%Y%m%d)
 
 for FLARE_CONTAINER_NAME in ${set_of_dependencies};

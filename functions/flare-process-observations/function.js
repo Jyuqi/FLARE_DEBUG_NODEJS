@@ -27,7 +27,7 @@ app.post('/run', function (req, res) {
 
     shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
 
-    shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name}`);
+    shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/master/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name}`);
 
 
     fs.readFile(`/opt/flare/shared/${payload.container_name}/flare-config.yml`, 'utf8', function (e, data) {
