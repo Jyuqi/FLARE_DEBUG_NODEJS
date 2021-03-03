@@ -45,7 +45,8 @@ app.post('/run', function (req, res) {
         }
     });
 
-    const process1 = cp.spawnSync('/bin/bash', ['/code/flare_pullworkdir.sh', `${payload.gitlab_server}`, `${payload.gitlab_port}`, `${payload.lake}`, `${payload.container_name}`, `${payload.username}`], { stdio: 'inherit' });
+    shell.exec(`wget  https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/master/commons/flare-install.sh`);
+    const process1 = cp.spawnSync('/bin/bash', ['/code/flare_pullworkdir.sh', `${payload.storage_server}`, `${payload.lake}`, `${payload.container_name}`], { stdio: 'inherit' });
     if(!process1.status){ 
         // update the config file
         const data = fs.readFileSync(`/opt/flare/shared/${payload.container_name}/flare-config.yml`, 'utf8');
@@ -57,7 +58,7 @@ app.post('/run', function (req, res) {
 
         const process2 = cp.spawnSync('/bin/bash', [`/opt/flare/${payload.container_name}/flare-host.sh`, '-d', '--openwhisk'], { stdio: 'inherit' });
         if(!process2.status){
-                const process3 = cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.gitlab_server}`, `${payload.gitlab_port}`, `${payload.lake}`, `${payload.container_name}`, `${payload.username}`], { stdio: 'inherit' });
+                const process3 = cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.storage_server}`, `${payload.lake}`, `${payload.container_name}`], { stdio: 'inherit' });
                 if(!process3.status){
                     const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
                     if(!process4.status){
