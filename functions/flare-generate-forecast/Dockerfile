@@ -1,4 +1,4 @@
-FROM flareforecast/flare-generate-forecast AS FLARE-containers
+FROM flareforecast/flare-generate-forecast:21.01.2 AS FLARE-containers
 
 FROM node:8-slim
 

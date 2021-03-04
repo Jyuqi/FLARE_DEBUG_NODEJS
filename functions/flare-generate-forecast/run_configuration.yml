@@ -1,8 +1,8 @@
 restart_file: .na
-start_day_local: 2021-02-27
+start_day_local: 2021-02-28
 start_time_local: '07:00:00'
 end_day_local: .na
-forecast_start_day_local: 2021-02-28
+forecast_start_day_local: 2021-03-01
 forecast_horizon: 16.0
 forecast_project_id: wrr_runs
 sim_name: wrr_runs

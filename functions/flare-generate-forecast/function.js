@@ -25,9 +25,9 @@ app.post('/run', function (req, res) {
     let prerunpull = false;
     let postrunpush = false;
 
-    shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
-
-    shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/master/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name}`);
+    shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');  
+    cp.spawnSync(`#!/bin/bash`, { stdio: 'inherit' });
+    shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/${payload.FLARE_VERSION}/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} ${payload.FLARE_VERSION}`);
 
 
     fs.readFile(`/opt/flare/shared/${payload.container_name}/flare-config.yml`, 'utf8', function (e, data) {
@@ -57,10 +57,13 @@ app.post('/run', function (req, res) {
         postrunpush = indentedJson["container"]["working-directory"]["post-run-push"];
 
         shell.exec( `/bin/bash /opt/flare/${payload.container_name}/flare-host.sh -d --openwhisk`);
+        shell.echo(`Second run of flare-host.sh`);
         shell.exec( `current_date=$(date +%Y%m%d)`);
         shell.exec( `yq w -i run_configuration.yml start_day_local "$(date -d "$current_date - 4 days" +%Y-%m-%d)"`);
         shell.exec( `yq w -i run_configuration.yml forecast_start_day_local "$(date -d "$current_date - 3 days" +%Y-%m-%d)"`);
         shell.cp('run_configuration.yml', '/root/flare/shared/flare-generate-forecast/forecast/configuration_files/');
+        shell.mkdir(`/root/.ssh`);
+        shell.cp(`id_rsa`, `/root/.ssh/`);
         const process2 = cp.spawnSync('/bin/bash', [`/opt/flare/${payload.container_name}/flare-host.sh`, '-d', '--openwhisk'], { stdio: 'inherit' });
         if(!process2.status){
                 shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pushworkdir.sh`);
