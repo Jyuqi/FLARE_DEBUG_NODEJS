@@ -1,4 +1,4 @@
-FROM flareforecast/flare-download-data AS FLARE-containers
+FROM flareforecast/flare-download-observations:21.01.2 AS FLARE-containers
 
 FROM node:8-slim
 

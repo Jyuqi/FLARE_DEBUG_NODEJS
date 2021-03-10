@@ -1,4 +1,4 @@
-FROM flareforecast/flare-process-noaa AS FLARE-containers
+FROM flareforecast/flare-process-noaa:21.01.2 AS FLARE-containers
 
 FROM node:8-slim
 
