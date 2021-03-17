@@ -52,5 +52,4 @@ do
 	downloaded==true || error_exit "$LINENO: An error has occurred in copy $FLARE_CONTAINER_NAME working directory."
 done
 
-bash `/opt/flare/${CONTAINER}/flare-host.sh -d --openwhisk || error_exit "$LINENO: An error has occurred in flare-host."
-
+bash /opt/flare/${CONTAINER}/flare-host.sh -d --openwhisk || error_exit "$LINENO: An error has occurred in flare-host."
