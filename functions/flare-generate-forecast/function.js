@@ -59,8 +59,8 @@ app.post('/run', function (req, res) {
         shell.exec( `/bin/bash /opt/flare/${payload.container_name}/flare-host.sh -d --openwhisk`);
         shell.echo(`Second run of flare-host.sh`);
         shell.exec( `current_date=$(date +%Y%m%d)`);
-        // shell.exec( `yq w -i run_configuration.yml start_day_local "$(date -d "$current_date - 4 days" +%Y-%m-%d)"`);
-        // shell.exec( `yq w -i run_configuration.yml forecast_start_day_local "$(date -d "$current_date - 3 days" +%Y-%m-%d)"`);
+        shell.exec( `yq w -i run_configuration.yml start_day_local "$(date -d "$current_date - 4 days" +%Y-%m-%d)"`);
+        shell.exec( `yq w -i run_configuration.yml forecast_start_day_local "$(date -d "$current_date - 3 days" +%Y-%m-%d)"`);
         shell.cp('run_configuration.yml', '/root/flare/shared/flare-generate-forecast/forecast/configuration_files/');
         shell.mkdir(`/root/.ssh`);
         shell.cp(`id_rsa`, `/root/.ssh/`);
