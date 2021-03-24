@@ -28,8 +28,6 @@ app.post('/run', function (req, res) {
 
     shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/${payload.FLARE_VERSION}/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} ${payload.FLARE_VERSION}`);
 
-
-
     shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pullworkdir.sh`);
     const process1 = cp.spawnSync('/bin/bash', ['/code/flare_pullworkdir.sh'], { stdio: 'inherit' });
     if(!process1.status){ 

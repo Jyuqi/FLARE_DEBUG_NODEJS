@@ -11,9 +11,7 @@ DIRECTORY_HOST="/opt/flare"
 DIRECTORY_HOST_SHARED="/opt/flare/shared"
 DIRECTORY_CONTAINER_SHARED="/root/flare/shared"
 CONFIG_FILE="flare-config.yml"
-# STORAGE_SERVER=$1
-# LAKE=$2 
-# CONTAINER=$3  
+
 s3_endpoint=$(yq r ${CONFIG_FILE} openwhisk.s3_storage.s3_endpoint)
 s3_access_key=$(yq r ${CONFIG_FILE} openwhisk.s3_storage.s3_access_key)
 s3_secret_key=$(yq r ${CONFIG_FILE} openwhisk.s3_storage.s3_secret_key)
@@ -27,19 +25,15 @@ mkdir -p ~/.ssh/
 cp /code/id_rsa ~/.ssh/id_rsa
 chmod 400 ~/.ssh/id_rsa
 
-# ssh-keyscan -t rsa ${STORAGE_SERVER} >> ~/.ssh/known_hosts
-
 # copy config file
-# scp ubuntu@${STORAGE_SERVER}:/home/ubuntu/fcre/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/ || error_exit "$LINENO: An error has occurred in copy config file."
 cp /code/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
 
+# install and alias mc
 wget https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod +x mc
-./mc alias set s3_flare $s3_endpoint $s3_access_key $s3_secret_key
+./mc alias set s3_flare $s3_endpoint $s3_access_key $s3_secret_key --api S3v4
 
 # copy work dir
-
-
 for FLARE_CONTAINER_NAME in ${set_of_dependencies};
 do
 	downloaded=false
