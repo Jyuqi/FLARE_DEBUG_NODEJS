@@ -28,6 +28,6 @@ chmod 400 ~/.ssh/id_rsa
 # ssh-keyscan -t rsa ${STORAGE_SERVER} >> ~/.ssh/known_hosts
 tar -czvf ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz -C ${DIRECTORY_CONTAINER_SHARED} ${CONTAINER}
 # scp ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz ubuntu@${STORAGE_SERVER}:/home/ubuntu/fcre/${CONTAINER}/
-./mc cp ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz flare/${LAKE}/$FLARE_CONTAINER_NAME/
+./mc cp ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz play/flare/${LAKE}/$FLARE_CONTAINER_NAME/ || error_exit "$LINENO: An error has occurred in pyush $FLARE_CONTAINER_NAME working directory."
 rm ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz
 rm mc
