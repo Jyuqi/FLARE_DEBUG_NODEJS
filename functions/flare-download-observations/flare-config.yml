@@ -1,0 +1,75 @@
+### Configuration File for CIBR-FLARE Project
+## General Settings
+git:
+  remote:
+    server: github.com
+    branch: master
+    ssh-key-private: /root/.ssh/id_rsa
+    user-name: Jyuqi
+    user-email: jinyuqi@ufl.edu
+## Container Settings
+container:
+  name: flare-download-observations
+  version: 21.01.2
+  working-directory:
+    pre-run-pull: FALSE
+    post-run-push: FALSE
+    git:
+      remote:
+        server: 192.168.20.20
+        port:
+        repository: FLARE-forecast/test-data
+        branch: master
+        directory: fcre
+        ssh-key-private:
+        user-name:
+        user-email:
+## Parameters
+lake_name_code: fcre
+lake_name: Falling Creek Reservoir
+noaa_location: flare-download-noaa-dev/fcre
+realtime_insitu_location:
+  git:
+    remote:
+      server: github.com
+      repository: FLARE-forecast/FCRE-data
+      branch: fcre-catwalk-data
+      directory:
+realtime_met_station_location:
+  git:
+    remote:
+      server: github.com
+      repository: FLARE-forecast/FCRE-data
+      branch: fcre-metstation-data
+      directory:
+manual_data_location:
+  git:
+    remote:
+      server: github.com
+      repository: FLARE-forecast/FCRE-data
+      branch: fcre-manual-data
+      directory:
+  manual-downloads:
+  - url: https://portal.edirepository.org/nis/dataviewer?packageid=edi.389.4&entityid=c1db8816742823eba86696b29f106d0f
+    file-name: Met_final_2015_2019.csv
+realtime_inflow_data_location:
+  git:
+    remote:
+      server: github.com
+      repository: FLARE-forecast/FCRE-data
+      branch: fcre-weir-data
+      directory:
+
+## Openwhisk Settings
+openwhisk:
+  apihost: 172.31.56.115
+  auth: d4558532-f53c-44cb-a4a0-3090cfd63880:fr7A1LGN1cA47u14Z37FVhIYLG7Z9pJLJwTM0Csn9bIL2DUvGFRF1NKpd9eXuqhQ
+  s3_storage:
+    s3_endpoint: http://172.31.56.115:9900
+    s3_access_key: root
+    s3_secret_key: y7S93S1bP8Y8
+  days-look-back: 0
+  container-dependencies: ""
+  next-trigger:
+    name: flare-download-observations-ready-fcre
+    payload: '{"type":"payload"}'
