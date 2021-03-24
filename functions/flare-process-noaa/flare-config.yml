@@ -1,0 +1,51 @@
+### Configuration File for CIBR-FLARE Project
+## General Settings
+git:
+  remote:
+    server: github.com
+    branch: master
+    ssh-key-private: /root/.ssh/id_rsa
+    user-name: Jyuqi
+    user-email: jinyuqi@ufl.edu
+## Container Settings
+container:
+  name: flare-process-noaa
+  version: 21.01.2
+  working-directory:
+    pre-run-pull: FALSE
+    post-run-push: FALSE
+    git:
+      remote:
+        server: 192.168.20.20
+        port:
+        repository: FLARE-forecast/test-data
+        branch: master
+        directory:
+## Container Paths
+flare_path: /root/flare
+flare_shared_path: /root/flare/shared
+read_from_path: /root/flare/shared/flare-download-noaa # Path to the downloaded NOAA files. To directly download from NOMADS server, leave the path blank.
+## Parameters
+downscale: TRUE
+run_parallel: TRUE
+overwrite: FALSE
+num_cores: 8
+forecast_date: .na
+forecast_time: .na
+lake_name_code: fcre
+lake_name: Falling Creek Reservoir
+lake_latitude: 37.307 # Degrees North
+lake_longitude: 79.837 # Degrees West
+## Openwhisk Settings
+openwhisk:
+  apihost: 172.31.56.115
+  auth: d4558532-f53c-44cb-a4a0-3090cfd63880:fr7A1LGN1cA47u14Z37FVhIYLG7Z9pJLJwTM0Csn9bIL2DUvGFRF1NKpd9eXuqhQ
+  s3_storage:
+    s3_endpoint: http://172.31.56.115:9900
+    s3_access_key: root
+    s3_secret_key: y7S93S1bP8Y8
+  days-look-back: 0
+  container-dependencies: "flare-download-noaa"
+  next-trigger:
+    name: flare-noaa-ready-fcre
+    payload: '{"type":"payload"}'

@@ -68,7 +68,7 @@ openwhisk:
     s3_endpoint: http://172.31.56.115:9900
     s3_access_key: root
     s3_secret_key: y7S93S1bP8Y8
-  days-look-back: 0
+  days-look-back: 1
   container-dependencies: ""
   next-trigger:
     name: flare-download-observations-ready-fcre
