@@ -4,9 +4,9 @@ git:
   remote:
     server: github.com
     branch: master
-    ssh-key-private:
-    user-name:
-    user-email:
+    ssh-key-private: /root/.ssh/id_rsa
+    user-name: Jyuqi
+    user-email: jinyuqi@ufl.edu
 ## Container Settings
 container:
   name: flare-visualize
@@ -33,12 +33,6 @@ lake_name_code: fcre
 lake_name: Falling Creek Reservoir
 ## Openwhisk Settings
 openwhisk:
-  apihost: 172.31.56.115
-  auth: d4558532-f53c-44cb-a4a0-3090cfd63880:fr7A1LGN1cA47u14Z37FVhIYLG7Z9pJLJwTM0Csn9bIL2DUvGFRF1NKpd9eXuqhQ
-  s3_storage:
-    s3_endpoint: http://172.31.56.115:9900
-    s3_access_key: root
-    s3_secret_key: y7S93S1bP8Y8
   days-look-back: 0
   container-dependencies: "flare-generate-forecast"
   next-trigger:

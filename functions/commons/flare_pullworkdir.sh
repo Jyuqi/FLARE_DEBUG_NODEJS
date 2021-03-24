@@ -12,9 +12,9 @@ DIRECTORY_HOST_SHARED="/opt/flare/shared"
 DIRECTORY_CONTAINER_SHARED="/root/flare/shared"
 CONFIG_FILE="flare-config.yml"
 
-s3_endpoint=$(yq r ${CONFIG_FILE} openwhisk.s3_storage.s3_endpoint)
-s3_access_key=$(yq r ${CONFIG_FILE} openwhisk.s3_storage.s3_access_key)
-s3_secret_key=$(yq r ${CONFIG_FILE} openwhisk.s3_storage.s3_secret_key)
+s3_endpoint=$1
+s3_access_key=$2
+s3_secret_key=$3
 LAKE=$(yq r ${CONFIG_FILE} lake_name_code)
 CONTAINER=$(yq r ${CONFIG_FILE} container.name)
 Ndays_steps=$(yq r ${CONFIG_FILE} openwhisk.days-look-back)
