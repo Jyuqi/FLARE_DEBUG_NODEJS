@@ -33,8 +33,9 @@ chmod 400 ~/.ssh/id_rsa
 # scp ubuntu@${STORAGE_SERVER}:/home/ubuntu/fcre/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/ || error_exit "$LINENO: An error has occurred in copy config file."
 cp /code/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
 
-
-mc alias set s3_flare $s3_endpoint $s3_access_key $s3_secret_key
+wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+./mc alias set s3_flare $s3_endpoint $s3_access_key $s3_secret_key
 
 
 # copy work dir
@@ -48,7 +49,7 @@ do
     	scandate=$(date -d "$current_date - $daysback days" +%Y%m%d)
 		if (downloaded==false) 
 		then
-			mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/
+			./mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/
 			if [ "$?" -eq "0" ]; # copy work dir success
 			then
 				echo "OK"
