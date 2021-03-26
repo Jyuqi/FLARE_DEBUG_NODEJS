@@ -31,7 +31,7 @@ cp /code/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
 # install and alias mc
 wget https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod +x mc
-./mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
+/code/mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
 
 # copy work dir
 for FLARE_CONTAINER_NAME in ${set_of_dependencies};
@@ -42,7 +42,7 @@ do
     	scandate=$(date -d "$current_date - $daysback days" +%Y%m%d)
 		if (downloaded==false) 
 		then
-			./mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/ || error_exit "$LINENO: An error has occurred in mc copy $FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz."
+			/code/mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/ || error_exit "$LINENO: An error has occurred in mc copy $FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz."
 			if [ "$?" -eq "0" ]; # copy work dir success
 			then
 				echo "OK"

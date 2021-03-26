@@ -23,6 +23,6 @@ cp /code/id_rsa ~/.ssh/id_rsa
 chmod 400 ~/.ssh/id_rsa
 
 tar -czvf ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz -C ${DIRECTORY_CONTAINER_SHARED} ${CONTAINER}
-./mc cp ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz flare/${LAKE}/${CONTAINER}/ || error_exit "$LINENO: An error has occurred in pyush $FLARE_CONTAINER_NAME working directory."
+/code/mc cp ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz flare/${LAKE}/${CONTAINER}/ || error_exit "$LINENO: An error has occurred in pyush $FLARE_CONTAINER_NAME working directory."
 rm ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz
-rm mc
+rm /code/mc
