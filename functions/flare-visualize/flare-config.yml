@@ -34,7 +34,7 @@ lake_name: Falling Creek Reservoir
 ## Openwhisk Settings
 openwhisk:
   days-look-back: 0
-  container-dependencies: "flare-generate-forecast"
+  container-dependencies: "flare-generate-forecast flare-process-observations"
   next-trigger:
     name: flare-visualize-ready-fcre
     payload: '{"type":"payload"}'
