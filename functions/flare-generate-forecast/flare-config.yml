@@ -185,7 +185,7 @@ diagnostics_names:  [extc_coef]
 ## Openwhisk Settings
 openwhisk:
   days-look-back: 1
-  container-dependencies: "flare-process-noaa flare-process-observations flare-download-observations flare-generate-forecast"
+  container-dependencies: "flare-process-noaa flare-process-observations flare-download-observations"
   next-trigger:
     name: flare-forecast-ready-fcre
     payload: '{"type":"payload"}'
