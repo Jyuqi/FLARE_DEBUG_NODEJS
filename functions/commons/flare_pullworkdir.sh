@@ -42,7 +42,7 @@ do
     	scandate=$(date -d "$current_date - $daysback days" +%Y%m%d)
 		if (downloaded==false) 
 		then
-			/code/mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/ || 
+			/code/mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/ 
 			if [ "$?" -eq "0" ]; # copy work dir success
 			then
 				echo "OK"
