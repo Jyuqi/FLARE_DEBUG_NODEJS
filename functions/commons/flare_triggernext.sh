@@ -10,6 +10,6 @@ NEXR_TRIGGER_PAYLOAD=$(yq r ${DIRECTORY}/${CONFIG_FILE} openwhisk.next-trigger.p
 
 apt-get update && apt-get install curl -y
 
-# curl -u $AUTH https://$APIHOST/api/v1/namespaces/_/triggers/$NEXR_TRIGGER \
-# -X POST -H "Content-Type: application/json" \
-# -d $NEXR_TRIGGER_PAYLOAD
+curl -u $AUTH https://$APIHOST/api/v1/namespaces/_/triggers/$NEXR_TRIGGER \
+-X POST -H "Content-Type: application/json" \
+-d $NEXR_TRIGGER_PAYLOAD
