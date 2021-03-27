@@ -1,16 +1,16 @@
 CONFIG_FILE="flare-config.yml"
 LAKE=$(yq r ${CONFIG_FILE} lake_name_code)
-CONTAINER=$(yq r ${CONFIG_FILE} container.name)
-DIRECTORY="/root/flare/shared/$CONTAINER"
+CONTAINER_NAME=$(yq r ${CONFIG_FILE} container.name)
+DIRECTORY_CONTAINER_SHARED="/root/flare/shared"
 APIHOST=$1
 AUTH=$2
 
-NEXR_TRIGGER=$(yq r ${DIRECTORY}/${CONFIG_FILE} openwhisk.next-trigger.name)
-NEXR_TRIGGER_PAYLOAD=$(yq r ${DIRECTORY}/${CONFIG_FILE} openwhisk.next-trigger.payload)
+NEXR_TRIGGER=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} openwhisk.next-trigger.name)
+NEXR_TRIGGER_PAYLOAD=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} openwhisk.next-trigger.payload)
 
 apt-get update && apt-get install curl -y
 
-if [ $CONTAINER == "flare-download-noaa" ]
+if [ $CONTAINER_NAME == "flare-download-noaa" ]
 then
     # Run Python Script
     NUMBER_OF_DAYS=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} number-of-days)
