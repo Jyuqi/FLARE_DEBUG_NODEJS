@@ -82,14 +82,6 @@ then
         fi
     fi
 
-    # Delete folders we don't need.
-
-    cd ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${NOAA_MODEL}/${LAKE_NAME_CODE}/
-    info "Start to delete Folders"
-    shopt -s extglob dotglob
-    rm -rf !("${TODAY_DATE}"|"${NOT_DELETE_DATE1}"|"${NOT_DELETE_DATE2}"|"${NOT_DELETE_DATE3}"|*.trg)
-    shopt -u extglob dotglob
-    info "Completed"
 else
    curl -u $AUTH https://$APIHOST/api/v1/namespaces/_/triggers/$NEXR_TRIGGER \
     -X POST -H "Content-Type: application/json" \
