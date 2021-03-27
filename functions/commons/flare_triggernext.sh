@@ -16,12 +16,12 @@ then
     NUMBER_OF_DAYS=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} number-of-days)
     NOAA_MODEL=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} noaa_model)
     LAKE_NAME_CODE=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} lake_name_code)
-    for (( i=$NUMBER_OF_DAYS-1; i>=0; i-- ))
-    do
-        PYDATE=$(date --date="-${i} day" +%Y%m%d)
-        info "Start to download ${PYDATE} data"
-        python3 ${DIRECTORY_CONTAINER}/${SCRIPTS_DIRECTORY}/${SCRIPT} ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${NOAA_MODEL}/${LAKE_NAME_CODE} ${PYDATE} 255 160
-    done
+    # for (( i=$NUMBER_OF_DAYS-1; i>=0; i-- ))
+    # do
+    #     PYDATE=$(date --date="-${i} day" +%Y%m%d)
+    #     info "Start to download ${PYDATE} data"
+    #     python3 ${DIRECTORY_CONTAINER}/${SCRIPTS_DIRECTORY}/${SCRIPT} ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${NOAA_MODEL}/${LAKE_NAME_CODE} ${PYDATE} 255 160
+    # done
 
     # Check data has been download sucessfully and trigger flare-process-noaa
     ## To do: check if it needs to run pyscipts again
@@ -33,41 +33,41 @@ then
     TRIGGER=true
     FOLDER=${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${NOAA_MODEL}/${LAKE_NAME_CODE}/${TODAY_DATE}
     YESTERDAY_FOLDER=${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${NOAA_MODEL}/${LAKE_NAME_CODE}/${NOT_DELETE_DATE1}
-    for time in 00 06 12 18
-    do
-        if [[ $time = "18" ]];then
-            CHECK_FOLDER=${YESTERDAY_FOLDER}
-            info "Start to check time:${time} files in ${NOT_DELETE_DATE1} folder"
-        else
-            CHECK_FOLDER=${FOLDER}
-            info "Start to check time:${time} files in ${TODAY_DATE} folder"
-        fi
+    # for time in 00 06 12 18
+    # do
+    #     if [[ $time = "18" ]];then
+    #         CHECK_FOLDER=${YESTERDAY_FOLDER}
+    #         info "Start to check time:${time} files in ${NOT_DELETE_DATE1} folder"
+    #     else
+    #         CHECK_FOLDER=${FOLDER}
+    #         info "Start to check time:${time} files in ${TODAY_DATE} folder"
+    #     fi
 
-        for name in tmp2m pressfc rh2m dlwrfsfc dswrfsfc apcpsfc ugrd10m vgrd10m
-        do
-            COMPLETED_CHECK=false
-            FILE=${CHECK_FOLDER}/gefs_pgrb2ap5_all_${time}z.ascii?${name}[0:30][0:64][255][160]
-            # Check if file is exist.
-            if [[ ! -f "${FILE}" ]]; 
-            then
-                info "$FILE does not exist."
-                TRIGGER=false
-                break
-            fi
-            # Check if file is completed.
-            while IFS= read -r line
-            do
-                if [[ $line = "lon, [1]" ]];then
-                    COMPLETED_CHECK=true
-                fi
-            done < "$FILE"
-            if [[ "${COMPLETED_CHECK}" = false ]];
-            then
-                info "${FILE} is not completed."
-                break
-            fi
-        done
-    done
+    #     for name in tmp2m pressfc rh2m dlwrfsfc dswrfsfc apcpsfc ugrd10m vgrd10m
+    #     do
+    #         COMPLETED_CHECK=false
+    #         FILE=${CHECK_FOLDER}/gefs_pgrb2ap5_all_${time}z.ascii?${name}[0:30][0:64][255][160]
+    #         # Check if file is exist.
+    #         if [[ ! -f "${FILE}" ]]; 
+    #         then
+    #             info "$FILE does not exist."
+    #             TRIGGER=false
+    #             break
+    #         fi
+    #         # Check if file is completed.
+    #         while IFS= read -r line
+    #         do
+    #             if [[ $line = "lon, [1]" ]];then
+    #                 COMPLETED_CHECK=true
+    #             fi
+    #         done < "$FILE"
+    #         if [[ "${COMPLETED_CHECK}" = false ]];
+    #         then
+    #             info "${FILE} is not completed."
+    #             break
+    #         fi
+    #     done
+    # done
 
     # Check if it has triggered, if not trigger flare-process-noaa
     TRIGGER_FILE=${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${NOAA_MODEL}/${LAKE_NAME_CODE}/${TODAY_DATE}.trg
@@ -75,7 +75,7 @@ then
     then
         if [[ ! -f "$TRIGGER_FILE" ]]; 
         then
-            info "Trigger flare-process-noaa"
+            # info "Trigger flare-process-noaa"
             #Trigger flare-process-noaa
             echo "Triggered" 2>&1 | tee -a ${FOLDER}/${TODAY_DATE}.trg
             curl -u ${AUTH} https://${APIHOST}/api/v1/namespaces/_/triggers/flare-download-noaa-ready-fcre -X POST -H "Content-Type: application/json"
