@@ -79,14 +79,14 @@ then
             # info "Trigger flare-process-noaa"
             #Trigger flare-process-noaa
             echo "Triggered" 2>&1 | tee -a ${FOLDER}/${TODAY_DATE}.trg
-            curl -u ${AUTH} https://${APIHOST}/api/v1/namespaces/_/triggers/flare-download-noaa-ready-fcre -X POST -H "Content-Type: application/json" -d $NEXR_TRIGGER_PAYLOAD
+            curl -u ${AUTH} https://${APIHOST}/api/v1/namespaces/_/triggers/flare-download-noaa-ready-fcre -X POST -H "Content-Type: application/json" -d "$NEXR_TRIGGER_PAYLOAD"
         fi
     fi
 
 else
    curl -u $AUTH https://$APIHOST/api/v1/namespaces/_/triggers/$NEXR_TRIGGER \
     -X POST -H "Content-Type: application/json" \
-    -d $NEXR_TRIGGER_PAYLOAD
+    -d "$NEXR_TRIGGER_PAYLOAD"
 fi
 
 
