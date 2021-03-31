@@ -28,8 +28,8 @@ chmod +x mc
 /code/mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
 
 # copy config file
-/code/mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
-/code/mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${CONFIG_FILE} .
+/code/mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
+/code/mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} .
 Ndays_steps=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.days-look-back)
 set_of_dependencies=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.container-dependencies)
 current_date=$(date +%Y%m%d)
