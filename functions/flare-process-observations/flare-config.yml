@@ -170,4 +170,4 @@ openwhisk:
   container-dependencies: "flare-download-observations"
   next-trigger:
     name: flare-observations-ready-fcre
-    payload: '{"type":"payload"}'
+    payload: '{"type":"payload2"}'

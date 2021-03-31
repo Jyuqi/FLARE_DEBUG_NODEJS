@@ -42,4 +42,4 @@ openwhisk:
   container-dependencies: "flare-download-noaa"
   next-trigger:
     name: flare-noaa-ready-fcre
-    payload: '{"type":"payload"}'
+    payload: '{"type":"payload1"}'
