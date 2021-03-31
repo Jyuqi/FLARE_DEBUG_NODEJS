@@ -15,11 +15,8 @@ CONFIG_FILE="flare-config.yml"
 s3_endpoint=$1
 s3_access_key=$2
 s3_secret_key=$3
-LAKE=$(yq r ${CONFIG_FILE} lake_name_code)
-CONTAINER=$(yq r ${CONFIG_FILE} container.name)
-Ndays_steps=$(yq r ${CONFIG_FILE} openwhisk.days-look-back)
-set_of_dependencies=$(yq r ${CONFIG_FILE} openwhisk.container-dependencies)
-current_date=$(date +%Y%m%d)
+CONTAINER=$4
+LAKE=$5
 
 mkdir -p ~/.ssh/
 cp /code/id_rsa ~/.ssh/id_rsa
@@ -27,6 +24,9 @@ chmod 400 ~/.ssh/id_rsa
 
 # copy config file
 cp /code/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
+Ndays_steps=$(yq r ${CONFIG_FILE} openwhisk.days-look-back)
+set_of_dependencies=$(yq r ${CONFIG_FILE} openwhisk.container-dependencies)
+current_date=$(date +%Y%m%d)
 
 # install and alias mc
 wget https://dl.min.io/client/mc/release/linux-amd64/mc

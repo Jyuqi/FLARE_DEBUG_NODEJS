@@ -13,8 +13,8 @@ CONFIG_FILE="flare-config.yml"
 s3_endpoint=$1
 s3_access_key=$2
 s3_secret_key=$3
-LAKE=$(yq r ${CONFIG_FILE} lake_name_code)
-CONTAINER=$(yq r ${CONFIG_FILE} container.name)
+CONTAINER=$4
+LAKE=$5
 
 
 TIMESTAMP=$(date +"%Y%m%d")
