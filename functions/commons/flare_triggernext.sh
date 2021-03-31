@@ -86,7 +86,7 @@ then
 else
    curl -u $AUTH https://$APIHOST/api/v1/namespaces/_/triggers/$NEXR_TRIGGER \
     -X POST -H "Content-Type: application/json" \
-    -d "$NEXR_TRIGGER_PAYLOAD"
+    -d "$NEXR_TRIGGER_PAYLOAD" 2>/dev/null
 fi
 
 
