@@ -22,16 +22,18 @@ mkdir -p ~/.ssh/
 cp /code/id_rsa ~/.ssh/id_rsa
 chmod 400 ~/.ssh/id_rsa
 
-# copy config file
-cp /code/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
-Ndays_steps=$(yq r ${CONFIG_FILE} openwhisk.days-look-back)
-set_of_dependencies=$(yq r ${CONFIG_FILE} openwhisk.container-dependencies)
-current_date=$(date +%Y%m%d)
-
 # install and alias mc
 wget https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod +x mc
 /code/mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
+
+# copy config file
+/code/mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
+/code/mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${CONFIG_FILE} .
+Ndays_steps=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.days-look-back)
+set_of_dependencies=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.container-dependencies)
+current_date=$(date +%Y%m%d)
+
 
 # copy work dir
 for FLARE_CONTAINER_NAME in ${set_of_dependencies};
