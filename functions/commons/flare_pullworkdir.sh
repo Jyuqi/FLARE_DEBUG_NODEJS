@@ -34,6 +34,11 @@ Ndays_steps=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhis
 set_of_dependencies=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.container-dependencies)
 current_date=$(date +%Y%m%d)
 
+# copy state.json for compound trigger
+if [ $CONTAINER == "compound-trigger" ]
+then
+	/code/mc cp flare/${LAKE}/${CONTAINER}/state.json .
+fi
 
 # copy work dir
 for FLARE_CONTAINER_NAME in ${set_of_dependencies};
