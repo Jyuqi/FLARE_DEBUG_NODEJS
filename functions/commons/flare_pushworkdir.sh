@@ -19,7 +19,7 @@ LAKE=$5
 
 
 TIMESTAMP=$(date +"%Y%m%d")
-mkdir ~/.ssh/
+mkdir -p ~/.ssh/
 cp /code/id_rsa ~/.ssh/id_rsa
 chmod 400 ~/.ssh/id_rsa
 
