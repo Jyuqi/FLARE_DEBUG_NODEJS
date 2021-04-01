@@ -31,10 +31,10 @@ then
     do
         if [[ $time = "18" ]];then
             CHECK_FOLDER=${YESTERDAY_FOLDER}
-            # info "Start to check time:${time} files in ${NOT_DELETE_DATE1} folder"
+            echo "Start to check time:${time} files in ${NOT_DELETE_DATE1} folder"
         else
             CHECK_FOLDER=${FOLDER}
-            # info "Start to check time:${time} files in ${TODAY_DATE} folder"
+            echo "Start to check time:${time} files in ${TODAY_DATE} folder"
         fi
 
         for name in tmp2m pressfc rh2m dlwrfsfc dswrfsfc apcpsfc ugrd10m vgrd10m
@@ -44,7 +44,7 @@ then
             # Check if file is exist.
             if [[ ! -f "${FILE}" ]]; 
             then
-                # info "$FILE does not exist."
+                echo "$FILE does not exist."
                 TRIGGER=false
                 break
             fi
@@ -57,7 +57,7 @@ then
             done < "$FILE"
             if [[ "${COMPLETED_CHECK}" = false ]];
             then
-                # info "${FILE} is not completed."
+                echo "${FILE} is not completed."
                 break
             fi
         done
@@ -69,7 +69,7 @@ then
     then
         if [[ ! -f "$TRIGGER_FILE" ]]; 
         then
-            # info "Trigger flare-process-noaa"
+            echo "Trigger flare-process-noaa"
             #Trigger flare-process-noaa
             echo "Triggered" 2>&1 | tee -a ${FOLDER}/${TODAY_DATE}.trg
             curl -u ${AUTH} https://${APIHOST}/api/v1/namespaces/_/triggers/$NEXR_TRIGGER -X POST -H "Content-Type: application/json" -d "$NEXR_TRIGGER_PAYLOAD"
