@@ -38,7 +38,6 @@ current_date=$(date +%Y%m%d)
 if [ $CONTAINER == "compound-trigger" ]
 then
 	/code/mc cp flare/${LAKE}/${CONTAINER}/state.json ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
-	/code/mc cp flare/${LAKE}/${CONTAINER}/state.json .
 fi
 
 # copy work dir
