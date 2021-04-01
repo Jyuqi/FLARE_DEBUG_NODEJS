@@ -1,6 +1,6 @@
 # Developing and Debugging Node.js OpenWhisk Functions in VS Code
 
-I follow this  project (https://github.com/nheidloff/openwhisk-debug-nodejs) which clearly shows how [Apache OpenWhisk](http://openwhisk.org/) functions can be developed and debugged locally via [Visual Studio Code](https://code.visualstudio.com/). 
+I follow this  [project](https://github.com/nheidloff/openwhisk-debug-nodejs) which clearly shows how [Apache OpenWhisk](http://openwhisk.org/) functions can be developed and debugged locally via [Visual Studio Code](https://code.visualstudio.com/). The current code is stored in [my personal repository](https://github.com/Jyuqi/FLARE_DEBUG_NODEJS/).
 
 
 Watch the [video](https://www.youtube.com/watch?v=P9hpcOqQ3hw) to see this in action.
@@ -87,47 +87,94 @@ $ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
 $ docker build -t <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME .
 $ docker push <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME
 ### if the openwhisk action is not created before, '-t' is timeout flag
-$ wsk -i action create $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
+$ wsk action create $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
 ### if the openwhisk action is already existed
-$ wsk -i action update $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
+$ wsk action update $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
 ```
 
 **Invocation and Payload**
 
 The payload.json should contain all the parameters we need to pass while invoking the action through the /run endpoint.
-* a lake name (a string, e.g. "fcre"), a container name (also a string, e.g. flare-download-noaa), a server IP and port,  and an SSH key. For example,
+* a lake name (a string, e.g. "fcre"), a container name (also a string, e.g. flare-download-noaa), a server IP,  and an SSH key. For example,
 
 ```json
 {
     "type": "payload",
+    "FLARE_VERSION": "21.01.2", 
+    "container_name": "flare-download-observations",
     "lake": "fcre",
-    "gitlab_server": "XXX.XXX.XXX.XXX",
-    "gitlab_port": "2289",
-    "username": "acis",
-    "container_name": "flare-download-noaa",
+    "s3_endpoint": "xxx",
+    "s3_access_key": "xxx",
+    "s3_secret_key": "xxx",
+    "openwhisk_apihost": "xxx",
+    "openwhisk_auth": "xxx",
     "ssh_key": ["-----BEGIN RSA PRIVATE KEY-----", "...", "-----END RSA PRIVATE KEY-----"]
 }
 ```
 
 To invoke the action, you can either invoke by passing a json file or passing all parameters one by one.
 ```sh
-$ wsk -i action invoke $FLARE_CONTAINER_NAME -P payload.json
+$ wsk action invoke $FLARE_CONTAINER_NAME -P payload.json
 ```
+
+**wsk Cheatsheet**
+```sh
+# invoke action with payload file
+$ wsk action invoke $FLARE_CONTAINER_NAME -P payload.json
+# After invocation, open another terminal to monitor whether the action finishes
+$ wsk activation poll
+# Access the activation log
+$ wsk activation get [activation id]
+$ wsk activation result [activation id]
+# update an action with different memory limit or timeout limit setting, flare-process-observations requires 2G memory and flare-generate-forecast requires 512M memory
+$ wsk action update $FLARE_CONTAINER_NAME -t [time in ms] -m [memory in MB]
+# create an action based on dockerhub  image
+$ wsk action create $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME
+```
+
 
 ## Developing Functions about Flare Containers in openwhisk
 
 * The function.js is the starting point for each container. 
-* When it finishes initialization, it will run flare_pullworkdir.sh that pulls flare-config.yml and all the dependencies from remote storage through scp commands. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
+* When it finishes initialization, it will run flare_pullworkdir.sh that pulls flare-config.yml and all the dependencies from remote 
+storage through scp commands. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
 * Then it runs FLARE-containers as described here: https://github.com/FLARE-forecast/FLAREv1/wiki/How-to-Run-FLARE-Containers
 * After finishes the job, the function run flare_pushworkdir.sh that pushes current working directory with time stamp to the remote storage. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
 * Finally it should use flare_triggernext.sh to trigger next action. The scheme is described here: https://docs.google.com/drawings/d/1vuVv8oTUOf1VD017zIsQ6Jdoys8al-Zy_55RJZvDK2Y/edit
+
+**wsk trigger deployment after creating all the actions**
+```sh
+# create an every-3-hour alarm trigger
+wsk trigger create flare-download-noaa-alarm-fcre --feed /whisk.system/alarms/alarm -p cron "0 */3 * * * " -p trigger_payload -p '{"FLARE_VERSION":"21.01.2", "container_name":"flare-download-noaa", "lake":"fcre", "s3_endpoint": "xxx", "s3_access_key":"xxx", "s3_secret_key":"xxx", "openwhisk_apihost": "xxx", "openwhisk_auth":"xxx", "ssh_key":["-----BEGIN RSA PRIVATE KEY-----",..., "-----END RSA PRIVATE KEY-----"]}'
+wsk rule create flare-download-noaa-rule flare-download-noaa-alarm-fcre flare-download-noaa
+
+wsk trigger create flare-download-noaa-ready-fcre
+wsk rule create flare-process-noaa-rule flare-download-noaa-ready-fcre flare-process-noaa
+
+# flare-data-repo-push-fcre should be a webhook
+wsk rule create flare-download-observations-rule flare-data-repo-push-fcre flare-download-observations
+
+wsk trigger create flare-download-observations-ready-fcre
+wsk rule create flare-process-observations-rule flare-download-observations-ready-fcre flare-process-observations
+
+wsk trigger create flare-noaa-ready-fcre
+wsk trigger create flare-observations-ready-fcre
+wsk rule create compound-trigger-rule1 flare-noaa-ready-fcre compound-trigger
+wsk rule create compound-trigger-rule2 flare-observations-ready-fcre compound-trigger
+
+wsk trigger create flare-drivers-ready-fcre
+wsk rule create flare-generate-forecast-rule flare-drivers-ready-fcre flare-generate-forecast
+
+wsk trigger create flare-forecast-ready-fcre
+wsk rule create flare-visualize-rule flare-forecast-ready-fcre flare-visualize
+```
 
 The information about next trigger should be included at the end of flare-config.yml, which is stored at the remote storage 
 ```yaml
 ## Openwhisk Settings
 openwhisk:
-  apihost: 
-  auth: 
+  days-look-back: 0
+  container-dependencies: "flare-download-noaa"
   next-trigger:
     name: flare-download-data-ready-fcre
     payload: 
