@@ -7,19 +7,6 @@ const cp = require('child_process');
 const shell = require('shelljs');
 
 
-  
-  function getFormattedTime() {
-    var today = new Date();
-    var y = today.getFullYear();
-    // JavaScript months are 0-based.
-    var m = today.getMonth() + 1;
-    var d = today.getDate();
-    var h = today.getHours();
-    var mi = today.getMinutes();
-    var s = today.getSeconds();
-    return y + "-" + m + "-" + d + "-" + h + "-" + mi + "-" + s;
-}
-
 app.use(bodyParser.json());
 
 app.post('/init', function (req, res) {
@@ -33,13 +20,15 @@ app.post('/init', function (req, res) {
 
 app.post('/run', function (req, res) {
     var payload = (req.body || {}).value;
-    let result;
+    let ret = "";
+
+    shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa'); 
     
     shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pullworkdir.sh`);
     const process1 = cp.spawnSync('/bin/bash', ['/code/flare_pullworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
     if(!process1.status){ 
 
-        const fileName = `/code/state.json`;
+        const fileName = `/opt/flare/shared/${payload.container_name}/state.json`;
         const state = require(fileName);
     
     
@@ -54,54 +43,52 @@ app.post('/run', function (req, res) {
             fs.writeFileSync(fileName, JSON.stringify(state));
         }
 
-        // Ready to trigger
-        if (state.noaa == "true"  && state.observations == "true") {
-            console.log(Date());
-            result = state.output;
-            fs.copyFile(fileName, `/root/${payload.lake_name}/state_${getFormattedTime()}.json`, (err) => {
-                if (err) throw err;
-                console.log('OK! Copy state.json');
-            });
-
-            // save the updated state.json to workdir
-            shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pushworkdir.sh`);
-            const process3 = cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
-            if(!process3.status){
+        // save the updated state.json to workdir
+        shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pushworkdir.sh`);
+        const process3 = cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
+        if(!process3.status){
+            // Ready to trigger
+            if (state.noaa == "true"  && state.observations == "true") {
                 shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_triggernext.sh`);
                 const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
                 if(!process4.status){
-                    ret += "success";
+
+                    // trigger successfully, reinitiate state
+                    state.noaa = "false";
+                    state.observations = "false";
+                    fs.writeFileSync(fileName, JSON.stringify(state));
+                    ret="success";
+
                 }
                 else{
-                    ret += "error in running flare_triggernext.sh; ";
-                }    
+                    ret="error in running flare_triggernext.sh; ";
+                }  
             }
             else{
-                ret += "error in running flare_pushworkdir.sh; ";
+                ret="not ready; ";
             }
-
-            // reinitiate state
-            state.alarm = "false";
-            state.webhook = "false";
-            state.output = "";
-            fs.writeFileSync(fileName, JSON.stringify(state));
-    
-            res.status(200).json({"result":"success"});
         }
         else{
-            res.status(403).json({"result":"not ready"});
+            ret="error in running flare_pushworkdir.sh; ";
         }
 
     }
     else{
-        ret = "error in running flare_pullworkdir.sh; ";
+        ret="error in running flare_pullworkdir.sh; ";
     }
 
-
+    shell.rm('flare_*');
     shell.rm('/code/id_rsa');
 
-
-
+    var result = { ret:ret };
+    if(ret == "success")
+    {
+        res.status(200).json(result);
+    }
+    else{
+        res.status(200).json(result);
+    }
+    
 
 });
 
