@@ -27,7 +27,7 @@ chmod 400 ~/.ssh/id_rsa
 if [ $CONTAINER == "compound-trigger" ]
 then
 	# update state file
-	/code/mc cp ${DIRECTORY_HOST_SHARED}/${CONTAINER}/state.json flare/${LAKE}/${CONTAINER}/ || error_exit "$LINENO: An error has occurred in updating state.json."
+	/code/mc cp ${DIRECTORY_HOST_SHARED}/${CONTAINER}/state.json flare/${LAKE}/${CONTAINER}/state_${TIMESTAMP}.json || error_exit "$LINENO: An error has occurred in updating state.json."
 else
 	tar -czvf ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz -C ${DIRECTORY_CONTAINER_SHARED} ${CONTAINER}
 	/code/mc cp ${LAKE}_${TIMESTAMP}_${CONTAINER}_workingdirectory.tar.gz flare/${LAKE}/${CONTAINER}/ || error_exit "$LINENO: An error has occurred in push $FLARE_CONTAINER_NAME working directory."
