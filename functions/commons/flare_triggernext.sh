@@ -13,7 +13,6 @@ apt-get update && apt-get install curl -y
 
 if [ $CONTAINER_NAME == "flare-download-noaa" ]
 then
-    # Run Python Script
     NUMBER_OF_DAYS=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} number-of-days)
     NOAA_MODEL=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} noaa_model)
     LAKE_NAME_CODE=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} lake_name_code)
@@ -73,7 +72,7 @@ then
             # info "Trigger flare-process-noaa"
             #Trigger flare-process-noaa
             echo "Triggered" 2>&1 | tee -a ${FOLDER}/${TODAY_DATE}.trg
-            curl -u ${AUTH} https://${APIHOST}/api/v1/namespaces/_/triggers/flare-download-noaa-ready-fcre -X POST -H "Content-Type: application/json" -d "$NEXR_TRIGGER_PAYLOAD"
+            curl -u ${AUTH} https://${APIHOST}/api/v1/namespaces/_/triggers/$NEXR_TRIGGER -X POST -H "Content-Type: application/json" -d "$NEXR_TRIGGER_PAYLOAD"
         fi
     fi
 
