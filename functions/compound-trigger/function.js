@@ -93,6 +93,8 @@ app.post('/run', function (req, res) {
 
     shell.rm('flare_*');
     shell.rm('/code/id_rsa');
+    shell.rm('/code/mc');
+
 
     var result = { ret:ret };
     if(ret == "success")
