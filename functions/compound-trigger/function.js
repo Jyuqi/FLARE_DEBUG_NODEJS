@@ -6,6 +6,17 @@ const path = require('path');
 const cp = require('child_process');
 const shell = require('shelljs');
 
+function getFormattedTime() {
+    var today = new Date();
+    var y = today.getFullYear();
+    // JavaScript months are 0-based.
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    var h = today.getHours();
+    var mi = today.getMinutes();
+    var s = today.getSeconds();
+    return y + "-" + m + "-" + d + "-" + h + "-" + mi + "-" + s;
+}
 
 app.use(bodyParser.json());
 
@@ -44,33 +55,36 @@ app.post('/run', function (req, res) {
         }
 
         // save the updated state.json to workdir
-        shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pushworkdir.sh`);
-        const process3 = cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
-        if(!process3.status){
-            // Ready to trigger
-            if (state.noaa == "true"  && state.observations == "true") {
-                shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_triggernext.sh`);
-                const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
-                if(!process4.status){
+        shell.exec(`/code/mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
+ 
 
-                    // trigger successfully, reinitiate state
-                    state.noaa = "false";
-                    state.observations = "false";
-                    fs.writeFileSync(fileName, JSON.stringify(state));
-                    ret="success";
+        // Ready to trigger
+        if (state.noaa == "true"  && state.observations == "true") {
+            shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_triggernext.sh`);
+            const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
+            if(!process4.status){
 
-                }
-                else{
-                    ret="error in running flare_triggernext.sh; ";
-                }  
+                // save the old state.json file with timestamp
+                shell.exec(`/code/mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state_${getFormattedTime()}.json`);
+
+                // trigger successfully, reinitiate state
+                state.noaa = "false";
+                state.observations = "false";
+                fs.writeFileSync(fileName, JSON.stringify(state));
+                ret="success";
+                // push the new state.json file to
+                shell.exec(`/code/mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
+
             }
             else{
-                ret="not ready; ";
-            }
+                ret="error in running flare_triggernext.sh; ";
+            }  
         }
         else{
-            ret="error in running flare_pushworkdir.sh; ";
+            ret="not ready; ";
         }
+        
+
 
     }
     else{
