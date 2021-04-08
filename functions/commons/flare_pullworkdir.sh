@@ -25,11 +25,11 @@ chmod 400 ~/.ssh/id_rsa
 # install and alias mc
 wget https://dl.min.io/client/mc/release/linux-amd64/mc
 chmod +x mc
-mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
+/code/mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
 
 # copy config file
-mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
-mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} .
+/code/mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
+/code/mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} .
 Ndays_steps=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.days-look-back)
 set_of_dependencies=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.container-dependencies)
 current_date=$(date +%Y%m%d)
@@ -37,8 +37,8 @@ current_date=$(date +%Y%m%d)
 # copy state.json for compound trigger
 if [ $CONTAINER == "compound-trigger" ]
 then
-	mc cp flare/${LAKE}/${CONTAINER}/state.json ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
-	mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/
+	/code/mc cp flare/${LAKE}/${CONTAINER}/state.json ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
+	/code/mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/
 fi
 
 # copy work dir
