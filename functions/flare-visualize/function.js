@@ -5,8 +5,6 @@ const fs = require('fs');
 const path = require('path');
 const shell = require('shelljs');
 const cp = require('child_process');
-const yaml = require('js-yaml');
-
 
 app.use(bodyParser.json());
 
