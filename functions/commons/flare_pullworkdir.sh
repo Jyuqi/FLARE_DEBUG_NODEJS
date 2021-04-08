@@ -23,8 +23,8 @@ cp /code/id_rsa ~/.ssh/id_rsa
 chmod 400 ~/.ssh/id_rsa
 
 # install and alias mc
-# wget https://dl.min.io/client/mc/release/linux-amd64/mc
-# chmod +x mc
+wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
 mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
 
 # copy config file
@@ -50,7 +50,7 @@ do
     	scandate=$(date -d "$current_date - $daysback days" +%Y%m%d)
 		if (downloaded==false) 
 		then
-			mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/ 
+			/code/mc cp flare/${LAKE}/$FLARE_CONTAINER_NAME/${LAKE}_${scandate}_${FLARE_CONTAINER_NAME}_workingdirectory.tar.gz ${DIRECTORY_HOST_SHARED}/ 
 			if [ "$?" -eq "0" ]; # copy work dir success
 			then
 				echo "OK"

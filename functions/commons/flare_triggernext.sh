@@ -9,7 +9,7 @@ LAKE=$4
 NEXR_TRIGGER=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} openwhisk.next-trigger.name)
 NEXR_TRIGGER_PAYLOAD=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} openwhisk.next-trigger.payload)
 
-# apt-get update && apt-get install curl -y
+apt-get update && apt-get install curl -y
 
 if [ $CONTAINER_NAME == "flare-download-noaa" ]
 then
