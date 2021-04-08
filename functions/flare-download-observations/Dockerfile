@@ -7,8 +7,7 @@ WORKDIR /code
 COPY . /code
 
 RUN npm install && \
-    npm install shelljs && \
-    npm install js-yaml --save
+    npm install shelljs
 
 RUN mv /code/node_modules /node_modules
 
