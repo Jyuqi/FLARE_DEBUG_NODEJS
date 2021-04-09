@@ -22,7 +22,6 @@ mkdir -p ~/.ssh/
 cp /code/id_rsa ~/.ssh/id_rsa
 chmod 400 ~/.ssh/id_rsa
 
-chmod +x /usr/bin/mc
 mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
 
 # copy config file
