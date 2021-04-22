@@ -86,7 +86,7 @@ Here is how to deploy the function locally.
 $ cd FLARE_DEBUG_NODEJS/functions/$FLARE_CONTAINER_NAME
 $ docker build -t <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME .
 $ docker push <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME
-### if the openwhisk action is not created before, '-t' is timeout flag
+### if the openwhisk action is not created before, -t [time in ms] -m [memory in MB]
 $ wsk action create $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
 ### if the openwhisk action is already existed
 $ wsk action update $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$FLARE_CONTAINER_NAME -t 18000000
@@ -99,7 +99,6 @@ The payload.json should contain all the parameters we need to pass while invokin
 
 ```json
 {
-    "type": "payload",
     "FLARE_VERSION": "21.01.2", 
     "container_name": "flare-download-observations",
     "lake": "fcre",
@@ -137,9 +136,9 @@ $ wsk action create $FLARE_CONTAINER_NAME --docker <dockerhub-name>/openwhisk-$F
 
 * The function.js is the starting point for each container. 
 * When it finishes initialization, it will run flare_pullworkdir.sh that pulls flare-config.yml and all the dependencies from remote 
-storage through scp commands. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
+storage both under flare/${LAKE}/${CONTAINER}/. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation. 
 * Then it runs FLARE-containers as described here: https://github.com/FLARE-forecast/FLAREv1/wiki/How-to-Run-FLARE-Containers
-* After finishes the job, the function run flare_pushworkdir.sh that pushes current working directory with time stamp to the remote storage. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
+* After finishes the job, the function run flare_pushworkdir.sh that pushes current working directory with time stamp to the remote storage under flare/${LAKE}/${CONTAINER}/. You can refer to https://github.com/FLARE-forecast/FLAREv1/wiki/Naming-scheme-for-container-data for more infomation.
 * Finally it should use flare_triggernext.sh to trigger next action. The scheme is described here: https://docs.google.com/drawings/d/1vuVv8oTUOf1VD017zIsQ6Jdoys8al-Zy_55RJZvDK2Y/edit
 
 **wsk trigger deployment after creating all the actions**
@@ -169,7 +168,7 @@ wsk trigger create flare-forecast-ready-fcre
 wsk rule create flare-visualize-rule flare-forecast-ready-fcre flare-visualize
 ```
 
-The information about next trigger should be included at the end of flare-config.yml, which is stored at the remote storage 
+The information about next trigger and which directories to pull(container-dependencies) should be included at the end of flare-config.yml, which is stored at the remote storage. 
 ```yaml
 ## Openwhisk Settings
 openwhisk:
@@ -177,6 +176,12 @@ openwhisk:
   container-dependencies: "flare-download-noaa"
   next-trigger:
     name: flare-download-data-ready-fcre
-    payload: 
+    payload: '{"FLARE_VERSION":"21.01.2", "container_name":"flare-download-noaa", "lake":"fcre", "s3_endpoint": "xxx", "s3_access_key":"xxx", "s3_secret_key":"xxx", "openwhisk_apihost": "xxx", "openwhisk_auth":"xxx", "ssh_key":["-----BEGIN RSA PRIVATE KEY-----",..., "-----END RSA PRIVATE KEY-----"]}'
 ```
 
+## Trouble shooting
+If vscode remote-ssh keeps reconnecting from Jetstream server, try to add the following line to .bashrc file on remote machine: 
+
+export VSCODE_DISABLE_PROC_READING=true
+
+https://github.com/microsoft/vscode-remote-release/issues/4205
