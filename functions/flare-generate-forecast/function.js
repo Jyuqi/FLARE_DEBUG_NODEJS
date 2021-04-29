@@ -22,7 +22,7 @@ app.post('/run', function (req, res) {
     let ret = "";
 
 
-    // shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
+    shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
 
     "FLARE_VERSION" in payload && payload.FLARE_VERSION != "latest"? shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/${payload.FLARE_VERSION}/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} ${payload.FLARE_VERSION}`): shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/latest/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} latest`);  
     shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pullworkdir.sh`);
@@ -36,8 +36,8 @@ app.post('/run', function (req, res) {
             shell.exec( `yq w -i run_configuration.yml start_day_local "$(date -d "$current_date - 4 days" +%Y-%m-%d)"`);
             shell.exec( `yq w -i run_configuration.yml forecast_start_day_local "$(date -d "$current_date - 3 days" +%Y-%m-%d)"`);
             shell.cp('run_configuration.yml', '/root/flare/shared/flare-generate-forecast/forecast/configuration_files/');
-            // shell.mkdir(`/root/.ssh`);
-            // shell.cp(`id_rsa`, `/root/.ssh/`);
+            shell.mkdir(`/root/.ssh`);
+            shell.cp(`/code/id_rsa`, `/root/.ssh/`);
         }
         
         const process2 = cp.spawnSync('/bin/bash', [`/opt/flare/${payload.container_name}/flare-host.sh`, '-d', '--openwhisk'], { stdio: 'inherit' });
@@ -68,7 +68,7 @@ app.post('/run', function (req, res) {
     }
 
 
-    // shell.rm('/code/id_rsa');
+    shell.rm('/code/id_rsa');
     shell.rm('/code/flare_*');
 
     var result = { ret:ret };

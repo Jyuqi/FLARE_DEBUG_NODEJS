@@ -68,7 +68,7 @@ app.post('/run', function (req, res) {
     }
 
 
-    // shell.rm('/code/id_rsa');
+    shell.rm('/code/id_rsa');
     shell.rm('/code/flare_*');
 
     var result = { ret:ret };
