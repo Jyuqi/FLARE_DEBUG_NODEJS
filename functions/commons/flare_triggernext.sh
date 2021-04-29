@@ -27,6 +27,7 @@ then
 fi
 
 # Start next trigger
+echo "$payload"
 if [[ "$CONTAINER_NAME" == "flare-download-noaa" ]];
 then
     NUMBER_OF_DAYS=$(yq r ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER_NAME}/${CONFIG_FILE} number-of-days)
