@@ -47,7 +47,8 @@ app.post('/run', function (req, res) {
                 const process3 = cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
                 if(!process3.status){
                     shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_triggernext.sh`);
-                    const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
+                    var next_trigger_payload = JSON.stringify(payload);
+                    const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`, `${next_trigger_payload}`], { stdio: 'inherit' });
                     if(!process4.status){
                         ret += "success";
                     }
@@ -69,7 +70,7 @@ app.post('/run', function (req, res) {
 
 
     shell.rm('/code/id_rsa');
-    shell.rm('flare_*');
+    shell.rm('/code/flare_*');
 
     var result = { ret:ret };
     res.status(200).json(result);
