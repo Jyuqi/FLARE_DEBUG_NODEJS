@@ -62,3 +62,5 @@ do
     done
 	downloaded==true || error_exit "$LINENO: An error has occurred in copy $FLARE_CONTAINER_NAME working directory."
 done
+# in case that the old config file rewrite the new one
+mc cp flare/${LAKE}/${CONTAINER}/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
