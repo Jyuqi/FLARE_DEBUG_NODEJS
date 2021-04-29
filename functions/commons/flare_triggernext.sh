@@ -23,8 +23,7 @@ fi
 # Remove type field in the next trigger if the current one the compound-trigger
 if [[ "$CONTAINER_NAME" == "compound-trigger" ]];
 then
-    jq 'del(.type)' /root/next_payload.json
-    payload="$(cat /root/next_payload.json)"
+    payload="$(jq 'del(.type)' /root/next_payload.json)" && echo "${payload}" > /root/next_payload.json
 fi
 
 # Start next trigger
