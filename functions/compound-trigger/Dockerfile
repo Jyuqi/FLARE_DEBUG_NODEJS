@@ -7,10 +7,12 @@ COPY . /code
 RUN apt-get -yq update && \
 	apt-get -yqq install wget \
 	git \
-	ssh 
+	ssh \
+	jq
 
-RUN wget -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 && \
-	chmod +x /usr/bin/yq
+RUN wget -O /usr/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc && \
+	wget -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download/3.4.1/yq_linux_amd64 && \
+	chmod +x /usr/bin/yq /usr/bin/mc 
 
 RUN npm install && \
     npm install shelljs

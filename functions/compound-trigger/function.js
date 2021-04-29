@@ -60,8 +60,9 @@ app.post('/run', function (req, res) {
 
         // Ready to trigger
         if (state.noaa == "true"  && state.observations == "true") {
+            var next_trigger_payload = JSON.stringify(payload);
             shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_triggernext.sh`);
-            const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
+            const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`, `${next_trigger_payload}`], { stdio: 'inherit' });
             if(!process4.status){
 
                 // save the old state.json file with timestamp
@@ -91,9 +92,8 @@ app.post('/run', function (req, res) {
         ret="error in running flare_pullworkdir.sh; ";
     }
 
-    shell.rm('flare_*');
+    shell.rm('/code/flare_*');
     shell.rm('/code/id_rsa');
-    shell.rm('/code/mc');
 
 
     var result = { ret:ret };
