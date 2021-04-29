@@ -144,7 +144,7 @@ storage both under flare/${LAKE}/${CONTAINER}/. You can refer to https://github.
 **wsk trigger deployment after creating all the actions**
 ```sh
 # create an every-3-hour alarm trigger
-wsk trigger create flare-download-noaa-alarm-fcre --feed /whisk.system/alarms/alarm -p cron "0 */3 * * * " -p trigger_payload -p '{"FLARE_VERSION":"21.01.2", "container_name":"flare-download-noaa", "lake":"fcre", "s3_endpoint": "xxx", "s3_access_key":"xxx", "s3_secret_key":"xxx", "openwhisk_apihost": "xxx", "openwhisk_auth":"xxx", "ssh_key":["-----BEGIN RSA PRIVATE KEY-----",..., "-----END RSA PRIVATE KEY-----"]}'
+wsk trigger create flare-download-noaa-alarm-fcre --feed /whisk.system/alarms/alarm -p cron "0 */3 * * * " -p trigger_payload '{"FLARE_VERSION":"21.01.2", "container_name":"flare-download-noaa", "lake":"fcre", "s3_endpoint": "xxx", "s3_access_key":"xxx", "s3_secret_key":"xxx", "openwhisk_apihost": "xxx", "openwhisk_auth":"xxx", "ssh_key":["-----BEGIN RSA PRIVATE KEY-----",..., "-----END RSA PRIVATE KEY-----"]}'
 wsk rule create flare-download-noaa-rule flare-download-noaa-alarm-fcre flare-download-noaa
 
 wsk trigger create flare-download-noaa-ready-fcre
@@ -175,8 +175,8 @@ openwhisk:
   days-look-back: 0
   container-dependencies: "flare-download-noaa"
   next-trigger:
-    name: flare-download-data-ready-fcre
-    payload: '{"FLARE_VERSION":"21.01.2", "container_name":"flare-download-noaa", "lake":"fcre", "s3_endpoint": "xxx", "s3_access_key":"xxx", "s3_secret_key":"xxx", "openwhisk_apihost": "xxx", "openwhisk_auth":"xxx", "ssh_key":["-----BEGIN RSA PRIVATE KEY-----",..., "-----END RSA PRIVATE KEY-----"]}'
+    name: flare-download-noaa-ready-fcre
+    container_name: flare-process-noaa
 ```
 
 ## Trouble shooting
