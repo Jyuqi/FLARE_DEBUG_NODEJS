@@ -55,7 +55,7 @@ app.post('/run', function (req, res) {
         }
 
         // save the updated state.json to workdir
-        shell.exec(`/code/mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
+        shell.exec(`mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
  
 
         // Ready to trigger
@@ -66,7 +66,7 @@ app.post('/run', function (req, res) {
             if(!process4.status){
 
                 // save the old state.json file with timestamp
-                shell.exec(`/code/mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state_${getFormattedTime()}.json`);
+                shell.exec(`mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state_${getFormattedTime()}.json`);
 
                 // trigger successfully, reinitiate state
                 state.noaa = "false";
@@ -74,7 +74,7 @@ app.post('/run', function (req, res) {
                 fs.writeFileSync(fileName, JSON.stringify(state));
                 ret="success";
                 // push the new state.json file to
-                shell.exec(`/code/mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
+                shell.exec(`mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
 
             }
             else{
