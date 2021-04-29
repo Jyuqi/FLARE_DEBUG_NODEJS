@@ -22,7 +22,7 @@ app.post('/run', function (req, res) {
     let ret = "";
 
 
-    // shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
+    shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
 
     "FLARE_VERSION" in payload && payload.FLARE_VERSION != "latest"? shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/${payload.FLARE_VERSION}/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} ${payload.FLARE_VERSION}`): shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/latest/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} latest`);  
     shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pullworkdir.sh`);
