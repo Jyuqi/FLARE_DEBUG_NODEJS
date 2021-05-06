@@ -22,38 +22,38 @@ app.post('/run', function (req, res) {
     let ret = "";
 
 
-    shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa');   
+    shell.echo(payload.ssh_key.join('\n')).to('/home/user/id_rsa');
 
-    "FLARE_VERSION" in payload && payload.FLARE_VERSION != "latest"? shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/${payload.FLARE_VERSION}/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} ${payload.FLARE_VERSION}`): shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/latest/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} latest`);  
-    shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pullworkdir.sh`);
-    const process1 = cp.spawnSync('/bin/bash', ['/code/flare_pullworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
-    if(!process1.status){ 
+    "FLARE_VERSION" in payload && payload.FLARE_VERSION != "latest"? shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/${payload.FLARE_VERSION}/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} ${payload.FLARE_VERSION}`): shell.exec(`wget -O - https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/latest/commons/flare-install.sh | /usr/bin/env bash -s ${payload.container_name} latest`);
+    shell.exec(`wget -O /home/user/flare_pullworkdir.sh https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/master/commons/flare_pullworkdir.sh`);
+    const process1 = cp.spawnSync('/bin/bash', ['/home/user/flare_pullworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
+    if(!process1.status){
 
         if(`${payload.container_name}`==`flare-generate-forecast`){
-            shell.exec( `/bin/bash /opt/flare/${payload.container_name}/flare-host.sh -d --openwhisk`);
+            shell.exec( `/bin/bash /home/user/flare-host/${payload.container_name}/flare-host.sh -d --openwhisk`);
             shell.echo(`Second run of flare-host.sh`);
             shell.exec( `current_date=$(date +%Y%m%d)`);
             shell.exec( `yq w -i run_configuration.yml start_day_local "$(date -d "$current_date - 4 days" +%Y-%m-%d)"`);
             shell.exec( `yq w -i run_configuration.yml forecast_start_day_local "$(date -d "$current_date - 3 days" +%Y-%m-%d)"`);
-            shell.cp('run_configuration.yml', '/root/flare/shared/flare-generate-forecast/forecast/configuration_files/');
-            shell.mkdir(`/root/.ssh`);
-            shell.cp(`/code/id_rsa`, `/root/.ssh/`);
+            shell.cp('run_configuration.yml', '/home/user/flare/shared/flare-generate-forecast/forecast/configuration_files/');
+            shell.mkdir(`/home/user/.ssh`);
+            shell.cp(`/home/user/id_rsa`, `/home/user/.ssh/`);
         }
-        
-        const process2 = cp.spawnSync('/bin/bash', [`/opt/flare/${payload.container_name}/flare-host.sh`, '-d', '--openwhisk'], { stdio: 'inherit' });
+
+        const process2 = cp.spawnSync('/bin/bash', [`/home/user/flare-host/${payload.container_name}/flare-host.sh`, '-d', '--openwhisk'], { stdio: 'inherit' });
         if(!process2.status){
-                shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pushworkdir.sh`);
-                const process3 = cp.spawnSync('/bin/bash', ['/code/flare_pushworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
+                shell.exec(`wget -O /home/user/flare_pushworkdir.sh https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/master/commons/flare_pushworkdir.sh`);
+                const process3 = cp.spawnSync('/bin/bash', ['/home/user/flare_pushworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
                 if(!process3.status){
-                    shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_triggernext.sh`);
+                    shell.exec(`wget -O /home/user/flare_triggernext.sh https://raw.githubusercontent.com/FLARE-forecast/FLARE-containers/master/commons/flare_triggernext.sh`);
                     var next_trigger_payload = JSON.stringify(payload);
-                    const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`, `${next_trigger_payload}`], { stdio: 'inherit' });
+                    const process4 = cp.spawnSync('/bin/bash', ['/home/user/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`, `${next_trigger_payload}`], { stdio: 'inherit' });
                     if(!process4.status){
                         ret += "success";
                     }
                     else{
                         ret += "error in running flare_triggernext.sh; ";
-                    }    
+                    }
                 }
                 else{
                     ret += "error in running flare_pushworkdir.sh; ";
@@ -68,8 +68,8 @@ app.post('/run', function (req, res) {
     }
 
 
-    shell.rm('/code/id_rsa');
-    shell.rm('/code/flare_*');
+    shell.rm('/home/user/id_rsa');
+    shell.rm('/home/user/flare_*');
 
     var result = { ret:ret };
     res.status(200).json(result);
