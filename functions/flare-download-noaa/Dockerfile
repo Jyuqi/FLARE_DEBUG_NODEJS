@@ -1,11 +1,7 @@
-FROM flareforecast/flare-download-noaa:21.01.3 AS FLARE-containers
+FROM flareforecast/flare-download-noaa:21.01.4
 
-RUN apt-get install jq -y
-
-WORKDIR /code
-
-COPY . /code
-
+# Start OpenWhisk Service
+WORKDIR /openwhisk
 EXPOSE 8080
-
+USER user:user
 CMD ["npm", "start"]
