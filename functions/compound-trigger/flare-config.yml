@@ -1,0 +1,8 @@
+### Configuration File for CIBR-FLARE Project
+## Openwhisk Settings
+openwhisk:
+  days-look-back: 1
+  container-dependencies: ""
+  next-trigger:
+    name: flare-drivers-ready-fcre
+    container_name: flare-generate-forecast

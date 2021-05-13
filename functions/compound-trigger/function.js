@@ -33,13 +33,11 @@ app.post('/run', function (req, res) {
     var payload = (req.body || {}).value;
     let ret = "";
 
-    shell.echo(payload.ssh_key.join('\n')).to('/code/id_rsa'); 
-    
-    shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_pullworkdir.sh`);
-    const process1 = cp.spawnSync('/bin/bash', ['/code/flare_pullworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
+    shell.echo(payload.ssh_key.join('\n')).to('/home/user/id_rsa');
+    const process1 = cp.spawnSync('/bin/bash', ['/home/user/openwhisk/flare_pullworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
     if(!process1.status){ 
 
-        const fileName = `/opt/flare/shared/${payload.container_name}/state.json`;
+        const fileName = `/home/user/flare-host/shared/${payload.container_name}/state.json`;
         const state = require(fileName);
     
     
@@ -55,18 +53,17 @@ app.post('/run', function (req, res) {
         }
 
         // save the updated state.json to workdir
-        shell.exec(`mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
+        shell.exec(`mc cp /home/user/flare-host/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
  
 
         // Ready to trigger
         if (state.noaa == "true"  && state.observations == "true") {
-            var next_trigger_payload = JSON.stringify(payload);
-            shell.exec(`wget https://raw.githubusercontent.com/Jyuqi/FLARE_DEBUG_NODEJS/master/functions/commons/flare_triggernext.sh`);
-            const process4 = cp.spawnSync('/bin/bash', ['/code/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`, `${next_trigger_payload}`], { stdio: 'inherit' });
+            var next_trigger_payload_init = JSON.stringify(payload);
+            const process4 = cp.spawnSync('/bin/bash', ['/home/user/openwhisk/flare_triggernext.sh', `${payload.openwhisk_apihost}`, `${payload.openwhisk_auth}`, `${payload.container_name}`, `${payload.lake}`, `${next_trigger_payload_init}`], { stdio: 'inherit' });
             if(!process4.status){
 
                 // save the old state.json file with timestamp
-                shell.exec(`mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state_${getFormattedTime()}.json`);
+                shell.exec(`mc cp /home/user/flare-host/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state_${getFormattedTime()}.json`);
 
                 // trigger successfully, reinitiate state
                 state.noaa = "false";
@@ -74,7 +71,7 @@ app.post('/run', function (req, res) {
                 fs.writeFileSync(fileName, JSON.stringify(state));
                 ret="success";
                 // push the new state.json file to
-                shell.exec(`mc cp /opt/flare/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
+                shell.exec(`mc cp /home/user/flare-host/shared/${payload.container_name}/state.json flare/${payload.lake}/${payload.container_name}/state.json`);
 
             }
             else{
@@ -92,8 +89,7 @@ app.post('/run', function (req, res) {
         ret="error in running flare_pullworkdir.sh; ";
     }
 
-    shell.rm('/code/flare_*');
-    shell.rm('/code/id_rsa');
+    shell.rm('/home/user/id_rsa');
 
 
     var result = { ret:ret };

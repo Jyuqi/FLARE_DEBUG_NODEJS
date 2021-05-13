@@ -2,8 +2,11 @@ version: "2"
 
 services:
   web:
-    build: .
+    build: 
+          context: ../
+          dockerfile: flare-download-noaa/Dockerfile
     command: npm run dev
     ports:
       - "8080:8080"
       - "5858:5858"
+    user: user

@@ -2,10 +2,11 @@ version: "2"
 
 services:
   web:
-    build: .
+    build: 
+          context: ../
+          dockerfile: compound-trigger/Dockerfile
     command: npm run dev
-    volumes:
-      - .:/code
     ports:
       - "8080:8080"
       - "5858:5858"
+    user: user
