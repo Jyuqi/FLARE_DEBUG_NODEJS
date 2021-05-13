@@ -25,8 +25,6 @@ chmod 400 ~/.ssh/id_rsa
 mc alias set flare $s3_endpoint $s3_access_key $s3_secret_key
 
 # copy config file
-mkdir -p ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
-mkdir -p ${DIRECTORY_CONTAINER_SHARED}/${CONTAINER}/
 cp /home/user/openwhisk/${CONFIG_FILE} ${DIRECTORY_HOST_SHARED}/${CONTAINER}/
 
 Ndays_steps=$(yq r ${DIRECTORY_HOST_SHARED}/${CONTAINER}/${CONFIG_FILE} openwhisk.days-look-back)

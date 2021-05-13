@@ -33,6 +33,8 @@ RUN chmod +x /home/user/bin/yq /home/user/bin/mc
 
 # Start OpenWhisk Service
 RUN mkdir /home/user/openwhisk/
+RUN mkdir -p /home/user/flare/shared/compound-trigger/
+RUN mkdir -p /home/user/flare-host/shared/compound-trigger/
 WORKDIR /home/user/openwhisk/
 RUN npm install && \
     npm install shelljs \
