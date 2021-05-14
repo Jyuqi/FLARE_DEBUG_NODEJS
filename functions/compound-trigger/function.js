@@ -33,7 +33,9 @@ app.post('/run', function (req, res) {
     var payload = (req.body || {}).value;
     let ret = "";
 
-    shell.echo(payload.ssh_key.join('\n')).to('/home/user/id_rsa');
+    if(payload.hasOwnProperty('ssh_key')){
+        shell.echo(payload.ssh_key.join('\n')).to('/home/user/id_rsa');
+    }
     const process1 = cp.spawnSync('/bin/bash', ['/home/user/openwhisk/flare_pullworkdir.sh', `${payload.s3_endpoint}`, `${payload.s3_access_key}`, `${payload.s3_secret_key}`, `${payload.container_name}`, `${payload.lake}`], { stdio: 'inherit' });
     if(!process1.status){ 
 
@@ -89,9 +91,10 @@ app.post('/run', function (req, res) {
         ret="error in running flare_pullworkdir.sh; ";
     }
 
-    shell.rm('/home/user/id_rsa');
-
-
+    if(payload.hasOwnProperty('ssh_key')){
+        shell.rm('/home/user/id_rsa');
+    }
+    
     var result = { ret:ret };
     if(ret == "success")
     {
